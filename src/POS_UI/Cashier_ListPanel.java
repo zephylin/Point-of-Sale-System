@@ -2,6 +2,7 @@ package POS_UI;
 
 import javax.swing.JPanel;
 
+
 import POS_PD.Store;
 
 import javax.swing.JList;

@@ -36,6 +36,7 @@ public class TaxCategory_ListPanel extends JPanel {
 			{
 				if(list.getSelectedValue() != null) {
 					btnEdit.setEnabled(true);
+					
 					if(list.getSelectedValue().hasItem()) {
 						btnDelete.setEnabled(false);
 					}
@@ -49,12 +50,28 @@ public class TaxCategory_ListPanel extends JPanel {
 		add(list);
 		
 		btnEdit = new JButton("Edit");
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				myFrame.getContentPane().removeAll();
+				myFrame.getContentPane().add(new TaxCategory_EditPanel(myFrame, myStore, list.getSelectedValue(),false));
+				myFrame.getContentPane().revalidate();
+			}
+		});
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnEdit.setBounds(94, 331, 102, 33);
 		add(btnEdit);
 		btnEdit.setEnabled(false);
 		
 		btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				myFrame.getContentPane().removeAll();
+				myFrame.getContentPane().add(new TaxCategory_EditPanel(myFrame, myStore, new TaxCategory(),true));
+				myFrame.getContentPane().revalidate();
+			}
+		});
 		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnAdd.setBounds(240, 331, 102, 33);
 		add(btnAdd);
