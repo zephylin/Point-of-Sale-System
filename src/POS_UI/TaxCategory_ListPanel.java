@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class TaxCategory_ListPanel extends JPanel {
 
@@ -58,6 +60,14 @@ public class TaxCategory_ListPanel extends JPanel {
 		add(btnAdd);
 		
 		btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				myStore.removeTaxCategory(list.getSelectedValue());
+				listModel.removeElement(list.getSelectedValue());
+				btnDelete.setEnabled(false);
+			}
+		});
 		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnDelete.setBounds(379, 331, 102, 33);
 		add(btnDelete);
