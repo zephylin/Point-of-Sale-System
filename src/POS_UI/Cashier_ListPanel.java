@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class Cashier_ListPanel extends JPanel {
 
@@ -36,7 +37,7 @@ public class Cashier_ListPanel extends JPanel {
 		
 		JLabel lblCashierList = new JLabel("Cashier List");
 		lblCashierList.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblCashierList.setBounds(128, 10, 97, 23);
+		lblCashierList.setBounds(273, 69, 97, 23);
 		add(lblCashierList);
 		
 		DefaultListModel<Cashier> listModel = new DefaultListModel<>();
@@ -68,7 +69,7 @@ public class Cashier_ListPanel extends JPanel {
 				}
 			}
 		});
-		cashierList.setBounds(90, 43, 184, 153);
+		cashierList.setBounds(235, 102, 184, 153);
 		add(cashierList);
 		
 		btnAdd = new JButton("Add");
@@ -81,7 +82,7 @@ public class Cashier_ListPanel extends JPanel {
 			}
 		});
 		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnAdd.setBounds(62, 229, 85, 33);
+		btnAdd.setBounds(148, 328, 85, 33);
 		add(btnAdd);
 		
 		
@@ -95,7 +96,7 @@ public class Cashier_ListPanel extends JPanel {
 			}
 		});
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnEdit.setBounds(177, 229, 97, 33);
+		btnEdit.setBounds(263, 328, 97, 33);
 		add(btnEdit);
 		btnEdit.setEnabled(false);
 		
@@ -109,9 +110,23 @@ public class Cashier_ListPanel extends JPanel {
 			}
 		});
 		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnDelete.setBounds(312, 229, 97, 33);
+		btnDelete.setBounds(398, 328, 97, 33);
 		add(btnDelete);
 		btnDelete.setEnabled(false);
+		
+		JButton btnNewButton = new JButton("Home");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				myFrame.getContentPane().removeAll();
+				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
+				myFrame.getContentPane().revalidate();
+			}
+		});
+		btnNewButton.setBackground(new Color(128, 255, 255));
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnNewButton.setBounds(46, 22, 97, 33);
+		add(btnNewButton);
 		
 		
 		

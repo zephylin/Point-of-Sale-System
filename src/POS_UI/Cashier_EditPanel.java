@@ -149,7 +149,7 @@ public class Cashier_EditPanel extends JPanel {
 				}
 				
 				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
+				myFrame.getContentPane().add(new Cashier_ListPanel(myFrame, myStore));
 				myFrame.getContentPane().revalidate();
 				
 			}
@@ -163,7 +163,7 @@ public class Cashier_EditPanel extends JPanel {
 			public void actionPerformed(ActionEvent e)
 			{
 				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
+				myFrame.getContentPane().add(new Cashier_ListPanel(myFrame, myStore));
 				myFrame.getContentPane().revalidate();
 			}
 		});
