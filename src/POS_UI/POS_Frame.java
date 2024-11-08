@@ -95,6 +95,14 @@ public class POS_Frame extends JFrame {
 		mnMaintain.add(mntmCashier);
 		
 		JMenuItem mntmRegister = new JMenuItem("Registers");
+		mntmRegister.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				contentPane.removeAll();
+				contentPane.add(new Register_ListPanel(contentPane, myStore));
+				contentPane.revalidate();
+			}
+		});
 		mnMaintain.add(mntmRegister);
 		
 		JMenu mnPos = new JMenu("POS");

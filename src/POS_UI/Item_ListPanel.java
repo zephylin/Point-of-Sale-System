@@ -10,6 +10,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Item_ListPanel extends JPanel {
 
@@ -53,11 +55,28 @@ public class Item_ListPanel extends JPanel {
 		add(list);
 		
 		JButton btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				contentPane.removeAll();
+				contentPane.add(new Item_EditPanel(contentPane, myStore,new Item(), false));
+				contentPane.revalidate();
+			}
+		});
 		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnAdd.setBounds(149, 399, 99, 29);
 		add(btnAdd);
 		
 		btnEdit = new JButton("Edit");
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				contentPane.removeAll();
+				contentPane.add(new Item_EditPanel(contentPane, myStore,list.getSelectedValue(), true));
+				
+				contentPane.revalidate();
+			}
+		});
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnEdit.setBounds(301, 399, 99, 29);
 		add(btnEdit);

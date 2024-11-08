@@ -116,7 +116,24 @@ public class TaxCategory_EditPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) 
 			{
 				taxCategory.setCategory(textField.getText());
-				taxCategory.addTaxRate((TaxRate)list.getModel());
+				if(list!=null) {
+					for (int i = 0; i < listModel.size(); i++) {
+					    taxCategory.addTaxRate(listModel.get(i));
+					    
+					}
+				}
+				
+				if(isAdd) {
+					taxCategory.setCategory(textField.getText());
+					if(list!=null) {
+						for (int i = 0; i < listModel.size(); i++) {
+						    taxCategory.addTaxRate(listModel.get(i));
+						    
+						}
+					}
+					
+					myStore.addTaxCategory(taxCategory);
+				}
 				
 				myFrame.getContentPane().removeAll();
 				myFrame.getContentPane().add(new TaxCategory_ListPanel(myFrame,myStore));
