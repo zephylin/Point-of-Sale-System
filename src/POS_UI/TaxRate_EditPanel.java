@@ -18,6 +18,7 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class TaxRate_EditPanel extends JPanel {
 
@@ -88,6 +89,8 @@ public class TaxRate_EditPanel extends JPanel {
 		add(comboBox_2);
 		
 		JButton btnNewButton = new JButton("Save");
+		btnNewButton.setBackground(new Color(0, 128, 255));
+		btnNewButton.setForeground(new Color(0, 0, 0));
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -97,6 +100,8 @@ public class TaxRate_EditPanel extends JPanel {
 		add(btnNewButton);
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setForeground(new Color(255, 255, 255));
+		btnCancel.setBackground(new Color(128, 128, 128));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{

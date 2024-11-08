@@ -72,6 +72,15 @@ public class POS_Frame extends JFrame {
 		mnMaintain.add(mntmTaxCategory);
 		
 		JMenuItem mntmItem = new JMenuItem("Item");
+		mntmItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				contentPane.removeAll();
+				contentPane.add(new Item_ListPanel(contentPane, myStore));
+				contentPane.revalidate();
+				
+			}
+		});
 		mnMaintain.add(mntmItem);
 		
 		JMenuItem mntmCashier = new JMenuItem("Cashiers");

@@ -11,6 +11,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class TaxCategory_ListPanel extends JPanel {
 
@@ -90,6 +91,20 @@ public class TaxCategory_ListPanel extends JPanel {
 		add(btnDelete);
 		btnDelete.setEnabled(false);
 		
+		JButton btnNewButton = new JButton("Home");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				myFrame.getContentPane().removeAll();
+				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
+				myFrame.getContentPane().revalidate();			}
+		});
+		btnNewButton.setBackground(new Color(128, 255, 255));
+		btnNewButton.setForeground(new Color(0, 0, 0));
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnNewButton.setBounds(94, 24, 85, 33);
+		add(btnNewButton);
+		
 		
 		
 		
@@ -97,5 +112,4 @@ public class TaxCategory_ListPanel extends JPanel {
 		
 
 	}
-
 }

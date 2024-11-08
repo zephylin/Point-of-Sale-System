@@ -48,6 +48,7 @@ public class Cashier_ListPanel extends JPanel {
 		
 
 		JList<Cashier> cashierList = new JList<>(listModel);
+		
 		cashierList.addListSelectionListener(new ListSelectionListener() 
 		{
 			public void valueChanged(ListSelectionEvent e)

@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class Cashier_EditPanel extends JPanel {
 
@@ -130,6 +131,8 @@ public class Cashier_EditPanel extends JPanel {
 		add(ssnTextField);
 		
 		JButton btnSave = new JButton("Save");
+		btnSave.setBackground(new Color(0, 128, 255));
+		btnSave.setForeground(new Color(0, 0, 0));
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -159,6 +162,8 @@ public class Cashier_EditPanel extends JPanel {
 		add(btnSave);
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBackground(new Color(128, 128, 128));
+		btnCancel.setForeground(new Color(255, 255, 255));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{

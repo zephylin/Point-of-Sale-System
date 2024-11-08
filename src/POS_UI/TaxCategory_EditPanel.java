@@ -13,6 +13,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class TaxCategory_EditPanel extends JPanel {
 
@@ -79,7 +80,7 @@ public class TaxCategory_EditPanel extends JPanel {
 			}
 		});
 		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnAdd.setBounds(309, 226, 70, 32);
+		btnAdd.setBounds(309, 226, 70, 24);
 		add(btnAdd);
 		
 		btnEdit = new JButton("Edit");
@@ -92,7 +93,7 @@ public class TaxCategory_EditPanel extends JPanel {
 			}
 		});
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnEdit.setBounds(407, 226, 70, 32);
+		btnEdit.setBounds(407, 226, 70, 24);
 		add(btnEdit);
 		btnEdit.setEnabled(false);
 		
@@ -104,11 +105,13 @@ public class TaxCategory_EditPanel extends JPanel {
 			}
 		});
 		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnDelete.setBounds(502, 226, 70, 32);
+		btnDelete.setBounds(502, 226, 70, 24);
 		add(btnDelete);
 		btnDelete.setEnabled(false);
 		
 		JButton btnNewButton_1 = new JButton("Save");
+		btnNewButton_1.setBackground(new Color(0, 128, 255));
+		btnNewButton_1.setForeground(new Color(0, 0, 0));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -126,6 +129,8 @@ public class TaxCategory_EditPanel extends JPanel {
 		add(btnNewButton_1);
 		
 		JButton btnNewButton_1_1 = new JButton("Cancel");
+		btnNewButton_1_1.setForeground(new Color(255, 255, 255));
+		btnNewButton_1_1.setBackground(new Color(128, 128, 128));
 		btnNewButton_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
