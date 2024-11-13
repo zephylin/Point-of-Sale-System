@@ -30,9 +30,9 @@ public class Cashier_ListPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 * @param myStore 
-	 * @param myFrame 
+	 * @param contentPane 
 	 */
-	public Cashier_ListPanel(JFrame myFrame, Store myStore) {
+	public Cashier_ListPanel(JPanel contentPane, Store myStore) {
 		setLayout(null);
 		
 		JLabel lblCashierList = new JLabel("Cashier List");
@@ -77,9 +77,9 @@ public class Cashier_ListPanel extends JPanel {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new Cashier_EditPanel(myFrame, myStore, new Cashier(),true));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new Cashier_EditPanel(contentPane, myStore, new Cashier(),true));
+				contentPane.revalidate();
 			}
 		});
 		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -91,9 +91,9 @@ public class Cashier_ListPanel extends JPanel {
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new Cashier_EditPanel(myFrame, myStore, cashierList.getSelectedValue(),false));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new Cashier_EditPanel(contentPane, myStore, cashierList.getSelectedValue(),false));
+				contentPane.revalidate();
 			}
 		});
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -119,9 +119,9 @@ public class Cashier_ListPanel extends JPanel {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new POS_Home(contentPane, myStore));
+				contentPane.revalidate();
 			}
 		});
 		btnNewButton.setBackground(new Color(128, 255, 255));

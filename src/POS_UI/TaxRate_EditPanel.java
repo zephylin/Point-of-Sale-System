@@ -9,6 +9,7 @@ import POS_PD.TaxRate;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -17,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
@@ -30,9 +32,10 @@ public class TaxRate_EditPanel extends JPanel {
 	 * @param b 
 	 * @param taxRate 
 	 * @param myStore 
-	 * @param myFrame 
+	 * @param contentPane 
+	 * @param currentPanel 
 	 */
-	public TaxRate_EditPanel(JFrame myFrame, Store myStore, TaxCategory taxCategory, TaxRate taxRate, boolean b) {
+	public TaxRate_EditPanel(JPanel contentPane, JPanel currentPanel, Store myStore, TaxCategory taxCategory, TaxRate taxRate, boolean isAdd) {
 		setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Edit Tax Rate");
@@ -88,12 +91,29 @@ public class TaxRate_EditPanel extends JPanel {
 		comboBox_2.setSelectedItem(year);
 		add(comboBox_2);
 		
+		
 		JButton btnNewButton = new JButton("Save");
 		btnNewButton.setBackground(new Color(0, 128, 255));
 		btnNewButton.setForeground(new Color(0, 0, 0));
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			{
+				int selectedDay = Integer.parseInt((String) comboBox.getSelectedItem());
+		        int selectedYear = Integer.parseInt((String) comboBox_2.getSelectedItem());
+		        Month selectedMonth = Month.of(comboBox_1.getSelectedIndex() + 1);
+
+		        LocalDate effectiveDate = LocalDate.of(selectedYear, selectedMonth, selectedDay);
+				taxRate.setTaxRate(new BigDecimal(textField.getText()));
+				taxRate.setEffectiveDate(effectiveDate);
+				if(isAdd) {
+					taxCategory.addTaxRate(taxRate);
+				}
+				
+				contentPane.removeAll();
+				contentPane.add(currentPanel);
+				contentPane.repaint();
+				
 			}
 		});
 		btnNewButton.setBounds(244, 329, 100, 30);
@@ -105,9 +125,9 @@ public class TaxRate_EditPanel extends JPanel {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new TaxCategory_EditPanel(myFrame,myStore,taxCategory,true ));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(currentPanel);
+				contentPane.repaint();
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));

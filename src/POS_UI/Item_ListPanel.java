@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class Item_ListPanel extends JPanel {
 
@@ -49,9 +50,13 @@ public class Item_ListPanel extends JPanel {
 					btnDelete.setEnabled(false);
 				}
 			}
+			else {
+				btnEdit.setEnabled(false);
+				btnDelete.setEnabled(false);
+			}
 			}
 		});
-		list.setBounds(214, 142, 204, 202);
+		list.setBounds(195, 142, 300, 202);
 		add(list);
 		
 		JButton btnAdd = new JButton("Add");
@@ -59,7 +64,7 @@ public class Item_ListPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) 
 			{
 				contentPane.removeAll();
-				contentPane.add(new Item_EditPanel(contentPane, myStore,new Item(), false));
+				contentPane.add(new Item_EditPanel(contentPane, myStore,new Item(), true));
 				contentPane.revalidate();
 			}
 		});
@@ -72,8 +77,7 @@ public class Item_ListPanel extends JPanel {
 			public void actionPerformed(ActionEvent e)
 			{
 				contentPane.removeAll();
-				contentPane.add(new Item_EditPanel(contentPane, myStore,list.getSelectedValue(), true));
-				
+				contentPane.add(new Item_EditPanel(contentPane, myStore,list.getSelectedValue(), false));
 				contentPane.revalidate();
 			}
 		});
@@ -83,10 +87,31 @@ public class Item_ListPanel extends JPanel {
 		btnEdit.setEnabled(false);
 		
 		btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				myStore.removeItem(list.getSelectedValue());
+				listModel.removeElement(list.getSelectedValue());
+			}
+		});
 		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnDelete.setBounds(454, 399, 99, 29);
 		add(btnDelete);
 		btnDelete.setEnabled(false);
+		
+		JButton btnHome = new JButton("Home");
+		btnHome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				contentPane.removeAll();
+				contentPane.add(new POS_Home(contentPane, myStore));
+				contentPane.revalidate();
+			}
+		});
+		btnHome.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnHome.setBackground(new Color(128, 255, 255));
+		btnHome.setBounds(26, 24, 97, 33);
+		add(btnHome);
 
 	}
 }

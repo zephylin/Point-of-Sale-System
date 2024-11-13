@@ -32,7 +32,7 @@ public class Cashier_EditPanel extends JPanel {
 	 * @param myFrame 
 	 * @param cashier 
 	 */
-	public Cashier_EditPanel(JFrame myFrame, Store myStore, Cashier cashier, boolean isAdd) {
+	public Cashier_EditPanel(JPanel contentPane, Store myStore, Cashier cashier, boolean isAdd) {
 		setLayout(null);
 		
 		JLabel lblEditCashier = new JLabel("Edit Cashier");
@@ -151,9 +151,9 @@ public class Cashier_EditPanel extends JPanel {
 					myStore.addCashier(cashier);
 				}
 				
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new Cashier_ListPanel(myFrame, myStore));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new Cashier_ListPanel(contentPane, myStore));
+				contentPane.revalidate();
 				
 			}
 		});
@@ -167,9 +167,9 @@ public class Cashier_EditPanel extends JPanel {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new Cashier_ListPanel(myFrame, myStore));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new Cashier_ListPanel(contentPane, myStore));
+				contentPane.revalidate();
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));

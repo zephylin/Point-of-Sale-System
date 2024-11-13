@@ -22,7 +22,7 @@ public class TaxCategory_ListPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public TaxCategory_ListPanel(JFrame myFrame, Store myStore) {
+	public TaxCategory_ListPanel(JPanel contentPane, Store myStore) {
 		setLayout(null);
 		
 		DefaultListModel<TaxCategory> listModel = new DefaultListModel<>();
@@ -47,20 +47,20 @@ public class TaxCategory_ListPanel extends JPanel {
 				}
 			}
 		});
-		list.setBounds(192, 83, 191, 175);
+		list.setBounds(246, 102, 191, 175);
 		add(list);
 		
 		btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new TaxCategory_EditPanel(myFrame, myStore, list.getSelectedValue(),false));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new TaxCategory_EditPanel(contentPane, myStore, list.getSelectedValue(),false));
+				contentPane.revalidate();
 			}
 		});
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnEdit.setBounds(94, 331, 102, 33);
+		btnEdit.setBounds(300, 350, 102, 33);
 		add(btnEdit);
 		btnEdit.setEnabled(false);
 		
@@ -68,13 +68,13 @@ public class TaxCategory_ListPanel extends JPanel {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new TaxCategory_EditPanel(myFrame, myStore, new TaxCategory(),true));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new TaxCategory_EditPanel(contentPane, myStore, new TaxCategory(),true));
+				contentPane.revalidate();
 			}
 		});
 		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnAdd.setBounds(240, 331, 102, 33);
+		btnAdd.setBounds(148, 350, 102, 33);
 		add(btnAdd);
 		
 		btnDelete = new JButton("Delete");
@@ -87,7 +87,7 @@ public class TaxCategory_ListPanel extends JPanel {
 			}
 		});
 		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnDelete.setBounds(379, 331, 102, 33);
+		btnDelete.setBounds(433, 350, 102, 33);
 		add(btnDelete);
 		btnDelete.setEnabled(false);
 		
@@ -95,14 +95,14 @@ public class TaxCategory_ListPanel extends JPanel {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
-				myFrame.getContentPane().revalidate();			}
+				contentPane.removeAll();
+				contentPane.add(new POS_Home(contentPane, myStore));
+				contentPane.revalidate();			}
 		});
 		btnNewButton.setBackground(new Color(128, 255, 255));
 		btnNewButton.setForeground(new Color(0, 0, 0));
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnNewButton.setBounds(94, 24, 85, 33);
+		btnNewButton.setBounds(42, 31, 85, 33);
 		add(btnNewButton);
 		
 		

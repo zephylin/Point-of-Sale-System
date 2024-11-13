@@ -20,11 +20,13 @@ public class TaxCategory_EditPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	JButton btnEdit, btnDelete, btnAdd;
+	
+	JPanel thisPanel = this;
 
 	/**
 	 * Create the panel.
 	 */
-	public TaxCategory_EditPanel(JFrame myFrame, Store myStore, TaxCategory taxCategory, boolean isAdd) {
+	public TaxCategory_EditPanel(JPanel contentPane, Store myStore, TaxCategory taxCategory, boolean isAdd) {
 		setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Tax Category");
@@ -73,9 +75,9 @@ public class TaxCategory_EditPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) 
 			{
 				
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new TaxRate_EditPanel(myFrame, myStore, taxCategory, new TaxRate(),  true));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new TaxRate_EditPanel(contentPane, thisPanel, myStore, taxCategory, new TaxRate(),  true));
+				contentPane.revalidate();
 				
 			}
 		});
@@ -87,9 +89,9 @@ public class TaxCategory_EditPanel extends JPanel {
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new TaxRate_EditPanel(myFrame, myStore,taxCategory, list.getSelectedValue(),false));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new TaxRate_EditPanel(contentPane,thisPanel,  myStore,taxCategory, list.getSelectedValue(),false));
+				contentPane.revalidate();
 			}
 		});
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -135,9 +137,9 @@ public class TaxCategory_EditPanel extends JPanel {
 					myStore.addTaxCategory(taxCategory);
 				}
 				
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new TaxCategory_ListPanel(myFrame,myStore));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new TaxCategory_ListPanel(contentPane,myStore));
+				contentPane.revalidate();
 				
 			}
 		});
@@ -151,9 +153,9 @@ public class TaxCategory_EditPanel extends JPanel {
 		btnNewButton_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new TaxCategory_ListPanel(myFrame, myStore));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new TaxCategory_ListPanel(contentPane, myStore));
+				contentPane.revalidate();
 			}
 		});
 		btnNewButton_1_1.setFont(new Font("Tahoma", Font.PLAIN, 13));

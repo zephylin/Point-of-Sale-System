@@ -19,7 +19,7 @@ public class Store_EditPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public Store_EditPanel(JFrame myFrame, Store myStore)
+	public Store_EditPanel(JPanel contentPane, Store myStore)
 	{
 		setLayout(null);
 		
@@ -39,9 +39,9 @@ public class Store_EditPanel extends JPanel {
 			{
 				
 				myStore.setName(textField.getText());
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new POS_Home(contentPane, myStore));
+				contentPane.revalidate();
 				
 			}
 		});
@@ -53,9 +53,9 @@ public class Store_EditPanel extends JPanel {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				myFrame.getContentPane().removeAll();
-				myFrame.getContentPane().add(new POS_Home(myFrame, myStore));
-				myFrame.getContentPane().revalidate();
+				contentPane.removeAll();
+				contentPane.add(new POS_Home(contentPane, myStore));
+				contentPane.revalidate();
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.BOLD, 12));

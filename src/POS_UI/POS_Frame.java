@@ -54,7 +54,7 @@ public class POS_Frame extends JFrame {
 			public void actionPerformed(ActionEvent e)
 			{
 				contentPane.removeAll();
-				contentPane.add(new Store_EditPanel(myFrame,myStore));
+				contentPane.add(new Store_EditPanel(contentPane,myStore));
 				contentPane.revalidate();
 			}
 		});
@@ -65,13 +65,13 @@ public class POS_Frame extends JFrame {
 			public void actionPerformed(ActionEvent e) 
 			{
 				contentPane.removeAll();
-				contentPane.add(new TaxCategory_ListPanel(myFrame, myStore));
+				contentPane.add(new TaxCategory_ListPanel(contentPane, myStore));
 				contentPane.revalidate();
 			}
 		});
 		mnMaintain.add(mntmTaxCategory);
 		
-		JMenuItem mntmItem = new JMenuItem("Item");
+		JMenuItem mntmItem = new JMenuItem("Items");
 		mntmItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -88,7 +88,7 @@ public class POS_Frame extends JFrame {
 			public void actionPerformed(ActionEvent e)
 			{
 				contentPane.removeAll();
-				contentPane.add(new Cashier_ListPanel(myFrame, myStore));
+				contentPane.add(new Cashier_ListPanel(contentPane, myStore));
 				contentPane.revalidate();
 			}
 		});
@@ -108,10 +108,21 @@ public class POS_Frame extends JFrame {
 		JMenu mnPos = new JMenu("POS");
 		menuBar.add(mnPos);
 		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Login");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				contentPane.removeAll();
+				contentPane.add(new Login_Panel(contentPane, myStore));
+				contentPane.revalidate();
+			}
+		});
+		mnPos.add(mntmNewMenuItem);
+		
 		JMenu mnReport = new JMenu("Reports");
 		menuBar.add(mnReport);
 		
-		contentPane = new POS_Home(this, myStore);
+		contentPane = new POS_Home(contentPane, myStore);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);

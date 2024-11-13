@@ -18,7 +18,7 @@ public class POS_Home extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public POS_Home(JFrame currentFrame, Store myStore) {
+	public POS_Home(JPanel contentPane, Store myStore) {
 		setLayout(null);
 		
 		JLabel lblStoreName = new JLabel(myStore.getName());
