@@ -4,6 +4,8 @@ import javax.swing.JPanel;
 
 import POS_PD.*;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -62,12 +64,12 @@ public class Price_EditPanel extends JPanel {
 		
 		JLabel lblEndDate = new JLabel("End Date");
 		lblEndDate.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblEndDate.setBounds(423, 231, 74, 19);
+		lblEndDate.setBounds(456, 230, 74, 19);
 		add(lblEndDate);
 		lblEndDate.setVisible(false);
 		
 		textField_2 = new JTextField();
-		textField_2.setBounds(515, 231, 96, 19);
+		textField_2.setBounds(548, 230, 96, 19);
 		add(textField_2);
 		textField_2.setColumns(10);
 		textField_2.setVisible(false);
@@ -99,7 +101,7 @@ public class Price_EditPanel extends JPanel {
 		});
 	
 		chckbxPromoPrice.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		chckbxPromoPrice.setBounds(423, 171, 93, 21);
+		chckbxPromoPrice.setBounds(456, 170, 93, 21);
 		add(chckbxPromoPrice);
 		chckbxPromoPrice.setVisible(false);
 
@@ -131,14 +133,34 @@ public class Price_EditPanel extends JPanel {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				contentPane.removeAll();
-				contentPane.add(currentPanel);
-				contentPane.repaint();
+				
+				int response = JOptionPane.showConfirmDialog(
+			            null,
+			            "Do you want to cancel?",
+			            "Cancel Confirmation",
+			            JOptionPane.YES_NO_OPTION,
+			            JOptionPane.QUESTION_MESSAGE
+			        );
+				
+				if(response==JOptionPane.YES_OPTION) {
+					contentPane.removeAll();
+					contentPane.add(currentPanel);
+					contentPane.repaint();
+				}
+				else {
+					contentPane.repaint();
+					}
+				
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnCancel.setBounds(411, 357, 86, 25);
 		add(btnCancel);
+		
+		JLabel lblNewLabel_3 = new JLabel("m/d/yyyy");
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblNewLabel_3.setBounds(382, 234, 50, 13);
+		add(lblNewLabel_3);
 		
 
 	}

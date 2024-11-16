@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import POS_PD.Register;
 import POS_PD.Store;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -58,9 +59,24 @@ public class Register_EditPanel extends JPanel {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				contentPane.removeAll();
-				contentPane.add(new Register_ListPanel(contentPane, myStore));
-				contentPane.revalidate();
+				
+				int response = JOptionPane.showConfirmDialog(
+			            null,
+			            "Do you want to cancel?",
+			            "Cancel Confirmation",
+			            JOptionPane.YES_NO_OPTION,
+			            JOptionPane.QUESTION_MESSAGE
+			        );
+				
+				if(response==JOptionPane.YES_OPTION) {
+					contentPane.removeAll();
+					contentPane.add(new Register_ListPanel(contentPane, myStore));
+					contentPane.revalidate();
+				}
+				else {
+					contentPane.repaint();
+					}
+				
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));

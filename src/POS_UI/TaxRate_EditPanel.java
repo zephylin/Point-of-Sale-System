@@ -7,6 +7,8 @@ import POS_PD.Store;
 import POS_PD.TaxCategory;
 import POS_PD.TaxRate;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.time.LocalDate;
 import java.time.Month;
@@ -112,6 +114,7 @@ public class TaxRate_EditPanel extends JPanel {
 				
 				contentPane.removeAll();
 				contentPane.add(currentPanel);
+				//contentPane.revalidate();
 				contentPane.repaint();
 				
 			}
@@ -125,9 +128,23 @@ public class TaxRate_EditPanel extends JPanel {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				contentPane.removeAll();
-				contentPane.add(currentPanel);
-				contentPane.repaint();
+				int response = JOptionPane.showConfirmDialog(
+			            null,
+			            "Do you want to cancel?",
+			            "Cancel Confirmation",
+			            JOptionPane.YES_NO_OPTION,
+			            JOptionPane.QUESTION_MESSAGE
+			        );
+				
+				if(response==JOptionPane.YES_OPTION) {
+					contentPane.removeAll();
+					contentPane.add(currentPanel);
+					contentPane.repaint();
+				}
+				else {
+					contentPane.repaint();
+					}
+				
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));

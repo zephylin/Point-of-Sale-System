@@ -6,12 +6,19 @@ import javax.swing.JPanel;
 import POS_PD.Cashier;
 import POS_PD.Store;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
+import java.awt.Insets;
+
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import javax.swing.JPasswordField;
+import javax.swing.JToggleButton;
+import javax.swing.JCheckBox;
 
 public class Cashier_EditPanel extends JPanel {
 
@@ -23,8 +30,10 @@ public class Cashier_EditPanel extends JPanel {
 	private JTextField stateTextField;
 	private JTextField zipTextField;
 	private JTextField phoneTextField;
-	private JTextField pwdTextField;
 	private JTextField ssnTextField;
+	private JPasswordField pwdField;
+	private JPasswordField pwdConfirmField;
+	JCheckBox checkBox;
 
 	/**
 	 * Create the panel.
@@ -80,7 +89,7 @@ public class Cashier_EditPanel extends JPanel {
 		lblPhone.setBounds(74, 280, 86, 25);
 		add(lblPhone);
 		
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Password*");
 		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblPassword.setBounds(74, 315, 86, 25);
 		add(lblPassword);
@@ -120,11 +129,6 @@ public class Cashier_EditPanel extends JPanel {
 		phoneTextField.setBounds(141, 284, 106, 19);
 		add(phoneTextField);
 		
-		pwdTextField = new JTextField(cashier.getPassword());
-		pwdTextField.setColumns(10);
-		pwdTextField.setBounds(141, 319, 106, 19);
-		add(pwdTextField);
-		
 		ssnTextField = new JTextField(cashier.getPerson().getsSN());
 		ssnTextField.setColumns(10);
 		ssnTextField.setBounds(389, 74, 106, 19);
@@ -136,8 +140,13 @@ public class Cashier_EditPanel extends JPanel {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
+				if(!pwdField.getText().equals(pwdConfirmField.getText())) {
+					 JOptionPane.showMessageDialog(null, "Passwod doesn't match", "Incorrect Password", JOptionPane.INFORMATION_MESSAGE);
+					 contentPane.repaint();
+				}
+				else {
 				cashier.setNumber(numberTextField.getText());
-				cashier.setPassword(pwdTextField.getText());
+				cashier.setPassword(pwdField.getText());
 				cashier.getPerson().setName(nameTextField.getText());
 				cashier.getPerson().setsSN(ssnTextField.getText());
 				cashier.getPerson().setAddress(addressTextField.getText());
@@ -155,10 +164,12 @@ public class Cashier_EditPanel extends JPanel {
 				contentPane.add(new Cashier_ListPanel(contentPane, myStore));
 				contentPane.revalidate();
 				
+				}
+				
 			}
 		});
 		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSave.setBounds(186, 375, 97, 37);
+		btnSave.setBounds(206, 396, 97, 37);
 		add(btnSave);
 		
 		JButton btnCancel = new JButton("Cancel");
@@ -167,14 +178,59 @@ public class Cashier_EditPanel extends JPanel {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				contentPane.removeAll();
-				contentPane.add(new Cashier_ListPanel(contentPane, myStore));
-				contentPane.revalidate();
+				
+				int response = JOptionPane.showConfirmDialog(
+			            null,
+			            "Do you want to cancel?",
+			            "Cancel Confirmation",
+			            JOptionPane.YES_NO_OPTION,
+			            JOptionPane.QUESTION_MESSAGE
+			        );
+				
+				if(response==JOptionPane.YES_OPTION) {
+					contentPane.removeAll();
+					contentPane.add(new Cashier_ListPanel(contentPane, myStore));
+					contentPane.revalidate();
+				}
+				else {
+					contentPane.repaint();
+					}
+				
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnCancel.setBounds(350, 375, 97, 37);
+		btnCancel.setBounds(357, 396, 97, 37);
 		add(btnCancel);
+		
+		pwdField = new JPasswordField(cashier.getPassword());
+		pwdField.setBounds(186, 319, 97, 19);
+		add(pwdField);
+		
+		JLabel lblConfirmPassword = new JLabel("Confirm Password*");
+		lblConfirmPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblConfirmPassword.setBounds(74, 350, 102, 25);
+		add(lblConfirmPassword);
+		
+		pwdConfirmField = new JPasswordField();
+		pwdConfirmField.setBounds(186, 354, 97, 19);
+		add(pwdConfirmField);
+		
+		checkBox = new JCheckBox("View Password");
+		checkBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(checkBox.isSelected()) {
+					pwdField.setEchoChar((char) 0); // Show password
+                    pwdConfirmField.setEchoChar((char) 0);
+				}
+				else {
+					pwdField.setEchoChar('*'); // Hide password
+                    pwdConfirmField.setEchoChar('*');
+				}
+			}
+		});
+		checkBox.setBounds(289, 318, 128, 21);
+		add(checkBox);
 
 	}
 }

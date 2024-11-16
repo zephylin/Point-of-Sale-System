@@ -1,12 +1,14 @@
 package POS_UI;
 
 import javax.swing.JFrame;
+
 import javax.swing.JPanel;
 import POS_PD.*;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.Font;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.event.ListSelectionListener;
@@ -14,6 +16,8 @@ import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
 
 public class TaxCategory_EditPanel extends JPanel {
 
@@ -21,13 +25,29 @@ public class TaxCategory_EditPanel extends JPanel {
 	private JTextField textField;
 	JButton btnEdit, btnDelete, btnAdd;
 	
-	JPanel thisPanel = this;
+	JPanel thisPanel;
+	DefaultListModel<TaxRate> listModel;
+	JList<TaxRate> list;
 
 	/**
 	 * Create the panel.
 	 */
 	public TaxCategory_EditPanel(JPanel contentPane, Store myStore, TaxCategory taxCategory, boolean isAdd) {
+		addAncestorListener(new AncestorListener() {
+			public void ancestorAdded(AncestorEvent event) 
+			{
+				listModel = new DefaultListModel<>();
+				for(TaxRate taxRate : taxCategory.getTaxRates())
+					listModel.addElement(taxRate);
+				list.setModel(listModel);
+			}
+			public void ancestorMoved(AncestorEvent event) {
+			}
+			public void ancestorRemoved(AncestorEvent event) {
+			}
+		});
 		setLayout(null);
+		thisPanel=this;
 		
 		JLabel lblNewLabel = new JLabel("Tax Category");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -44,18 +64,21 @@ public class TaxCategory_EditPanel extends JPanel {
 		lblNewLabel_1.setBounds(360, 90, 96, 24);
 		add(lblNewLabel_1);
 		
-		DefaultListModel<TaxRate> listModel =new DefaultListModel<>();
+		listModel =new DefaultListModel<>();
 		for(TaxRate taxRate : taxCategory.getTaxRates()) {
 			listModel.addElement(taxRate);
 		}
 		
-		JList<TaxRate> list = new JList<>(listModel);
+		list = new JList<>(listModel);
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) 
 			{
 				if(list.getSelectedValue() != null) {
 					btnEdit.setEnabled(true);
-					if(!taxCategory.hasTaxRate(list.getSelectedValue())) {
+					if(list.getSelectedValue().isUsed()) {
+						btnDelete.setEnabled(false);
+					}
+					else{
 						btnDelete.setEnabled(true);
 					}
 					
@@ -76,7 +99,7 @@ public class TaxCategory_EditPanel extends JPanel {
 			{
 				
 				contentPane.removeAll();
-				contentPane.add(new TaxRate_EditPanel(contentPane, thisPanel, myStore, taxCategory, new TaxRate(),  true));
+				contentPane.add(new TaxRate_EditPanel(contentPane, thisPanel, myStore, taxCategory, new TaxRate(),true));
 				contentPane.revalidate();
 				
 			}
@@ -104,6 +127,7 @@ public class TaxCategory_EditPanel extends JPanel {
 			public void actionPerformed(ActionEvent e)
 			{
 				taxCategory.removeTaxRate(list.getSelectedValue());
+				listModel.removeElement(list.getSelectedValue());
 			}
 		});
 		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -153,9 +177,24 @@ public class TaxCategory_EditPanel extends JPanel {
 		btnNewButton_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				contentPane.removeAll();
-				contentPane.add(new TaxCategory_ListPanel(contentPane, myStore));
-				contentPane.revalidate();
+				int response = JOptionPane.showConfirmDialog(
+			            null,
+			            "Do you want to cancel?",
+			            "Cancel Confirmation",
+			            JOptionPane.YES_NO_OPTION,
+			            JOptionPane.QUESTION_MESSAGE
+			        );
+				
+				if(response==JOptionPane.YES_OPTION) {
+					contentPane.removeAll();
+					contentPane.add(new TaxCategory_ListPanel(contentPane, myStore));
+					contentPane.revalidate();
+				}
+				else {
+					contentPane.repaint();
+					}
+				
+				
 			}
 		});
 		btnNewButton_1_1.setFont(new Font("Tahoma", Font.PLAIN, 13));

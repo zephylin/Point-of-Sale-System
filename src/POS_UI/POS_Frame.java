@@ -43,6 +43,7 @@ public class POS_Frame extends JFrame {
 		setBounds(100, 100, 700, 600);
 		
 		JFrame myFrame=this;
+		myFrame.setTitle(myStore.getName());
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
