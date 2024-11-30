@@ -56,7 +56,7 @@ public class Item_ListPanel extends JPanel {
 			}
 			}
 		});
-		list.setBounds(195, 142, 300, 202);
+		list.setBounds(195, 142, 324, 202);
 		add(list);
 		
 		JButton btnAdd = new JButton("Add");

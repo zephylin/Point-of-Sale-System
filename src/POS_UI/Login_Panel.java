@@ -17,6 +17,8 @@ import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
+import javax.swing.JCheckBox;
 
 public class Login_Panel extends JPanel {
 
@@ -34,9 +36,16 @@ public class Login_Panel extends JPanel {
 		
 		JLabel lblNewLabel = new JLabel("Login");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(268, 65, 67, 22);
+		lblNewLabel.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		lblNewLabel.setBounds(279, 40, 74, 28);
 		add(lblNewLabel);
+		
+		JLabel lblMessage = new JLabel("INVALID PASSWORD");
+		lblMessage.setForeground(new Color(255, 0, 0));
+		lblMessage.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblMessage.setBounds(251, 302, 150, 17);
+		add(lblMessage);
+		lblMessage.setVisible(false);
 		
 		JLabel lblNewLabel_1 = new JLabel("Cashier Number/Name");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -76,7 +85,7 @@ public class Login_Panel extends JPanel {
 		add(comboBox_1);
 		comboBox_1.setSelectedItem(null);
 		
-		textField = new JTextField();
+		textField = new JTextField("0.00");
 		textField.setBounds(332, 226, 100, 19);
 		add(textField);
 		textField.setColumns(10);
@@ -92,17 +101,23 @@ public class Login_Panel extends JPanel {
 				Cashier cashier = (Cashier)(comboBox.getSelectedItem());
 				Register register = (Register)(comboBox_1.getSelectedItem());
 				String password = new String(passwordField.getText());
-				if(cashier.isAuthorized(password)) {
-					register.getCashDrawer().addCash(new BigDecimal(textField.getText()));
-					Session session = new Session(cashier, register, myStore);
-					contentPane.removeAll();
-					contentPane.add(new Sale_Panel(contentPane, myStore, session, new Sale()));
-					contentPane.revalidate();					
-					
+				if(cashier==null || register==null) {
+					JOptionPane.showMessageDialog(null, "Please select both Cashier and Register", "Error", JOptionPane.ERROR_MESSAGE);
 				}
-				
-				else {
-					JOptionPane.showMessageDialog(null, "Password is incorrect, Please provide correct Passsword", "Error", JOptionPane.ERROR_MESSAGE);
+				else 
+				{
+					if(cashier.isAuthorized(password)) {
+						register.getCashDrawer().addCash(new BigDecimal(textField.getText()));
+						Session session = new Session(cashier, register, myStore);
+						contentPane.removeAll();
+						contentPane.add(new Sale_Panel(contentPane, myStore, session, new Sale()));
+						contentPane.revalidate();					
+					
+					}
+					else {
+					//JOptionPane.showMessageDialog(null, "Password is incorrect, Please provide correct Passsword", "Error", JOptionPane.ERROR_MESSAGE);
+					lblMessage.setVisible(true);
+				}
 				}
 			}
 		});
@@ -122,6 +137,25 @@ public class Login_Panel extends JPanel {
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnCancel.setBounds(339, 359, 85, 28);
 		add(btnCancel);
+		
+		JCheckBox checkBox = new JCheckBox("View Password");
+		checkBox.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		checkBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(checkBox.isSelected()) {
+					passwordField.setEchoChar((char) 0); // Show password
+				}
+				else {
+					passwordField.setEchoChar('*'); // Hide password
+                    
+				}
+			}
+		});
+		checkBox.setBounds(438, 272, 128, 21);
+		add(checkBox);
+		
+
 
 	}
 }

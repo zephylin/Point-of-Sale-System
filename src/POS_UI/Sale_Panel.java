@@ -161,7 +161,7 @@ public class Sale_Panel extends JPanel {
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) 
 			{
-				
+				// TODO: Action listener for SaleLineItem
 			}
 		});
 		list.setBounds(77, 168, 293, 114);
