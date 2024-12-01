@@ -123,6 +123,39 @@ public class POS_Frame extends JFrame {
 		JMenu mnReport = new JMenu("Reports");
 		menuBar.add(mnReport);
 		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Cashier Report");
+		mntmNewMenuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				contentPane.removeAll();
+				contentPane.add(new Cashier_Report_Panel(contentPane, myStore));
+				contentPane.revalidate();
+			}
+		});
+		mnReport.add(mntmNewMenuItem_1);
+		
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Item Report");
+		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				contentPane.removeAll();
+				contentPane.add(new Item_Report_Panel(contentPane, myStore));
+				contentPane.revalidate();
+			}
+		});
+		mnReport.add(mntmNewMenuItem_2);
+		
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Daily Sales Report");
+		mntmNewMenuItem_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				contentPane.removeAll();
+				contentPane.add(new Sale_Report_Panel(contentPane, myStore));
+				contentPane.revalidate();
+			}
+		});
+		mnReport.add(mntmNewMenuItem_3);
+		
 		contentPane = new POS_Home(contentPane, myStore);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));

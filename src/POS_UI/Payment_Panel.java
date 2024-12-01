@@ -159,8 +159,9 @@ public class Payment_Panel extends JPanel {
 			public void actionPerformed(ActionEvent e) 
 			{
 				contentPane.removeAll();
-				contentPane.add(new Sale_Panel(contentPane, myStore, session, new Sale()));
+				contentPane.add(currentPanel);
 				contentPane.revalidate();
+				contentPane.repaint();
 			}
 		});
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));

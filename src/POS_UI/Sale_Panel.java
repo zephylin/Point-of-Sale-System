@@ -15,10 +15,12 @@ import javax.swing.JButton;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.AncestorEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.Color;
 
 public class Sale_Panel extends JPanel {
 
@@ -30,8 +32,9 @@ public class Sale_Panel extends JPanel {
 	private JTextField totalField;
 	private JTextField amtTenderedField;
 	private JTextField changeField;
-	JButton btnCompleteSale;
+	JButton btnCompleteSale, btnPayment;
 	DefaultListModel<SaleLineItem> sliListModel;
+	JLabel lblItemNotFound;
 
 	/**
 	 * Create the panel.
@@ -46,11 +49,20 @@ public class Sale_Panel extends JPanel {
 			public void ancestorAdded(AncestorEvent event) 
 			{
 				if(!sliListModel.isEmpty()) {
+					
+					btnPayment.setEnabled(true);
 					subTotalField.setText(sale.calcSubTotal().toString());
 					taxField.setText(sale.calcTax().toString());
 					totalField.setText(sale.calcTotal().toString());
 					amtTenderedField.setText(sale.calcAmtTendered().toString());
-					changeField.setText(sale.calcChange().toString());
+					BigDecimal p = new BigDecimal(0);
+					if((sale.calcChange().compareTo(p))>=0) {
+						changeField.setText(sale.calcChange().toString());
+					}
+					else {
+						changeField.setText("Not yet Paid");
+					}
+					
 					
 					if(sale.calcAmtTendered().compareTo(sale.calcTotal())>=0) {
 						btnCompleteSale.setEnabled(true);
@@ -112,9 +124,20 @@ public class Sale_Panel extends JPanel {
 					subTotalField.setText(sale.calcSubTotal().toString());
 					taxField.setText(sale.calcTax().toString());
 					totalField.setText(sale.calcTotal().toString());
+					BigDecimal x  = new BigDecimal(0);
+					lblItemNotFound.setVisible(false);
+					if((sale.calcChange().compareTo(x))>=0) {
+						changeField.setText(sale.calcChange().toString());
+					}
+					else {
+						changeField.setText("Not yet Paid");
+					}
+								
+					btnPayment.setEnabled(true);
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "Item not found", "Message", JOptionPane.INFORMATION_MESSAGE);
+					lblItemNotFound.setVisible(true);
+					//JOptionPane.showMessageDialog(null, "Item not found", "Message", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -162,6 +185,9 @@ public class Sale_Panel extends JPanel {
 			public void valueChanged(ListSelectionEvent e) 
 			{
 				// TODO: Action listener for SaleLineItem
+//				if(list!=null){
+//					btnPayment.setEnabled(true);
+//				}
 			}
 		});
 		list.setBounds(77, 168, 293, 114);
@@ -218,7 +244,7 @@ public class Sale_Panel extends JPanel {
 		add(changeField);
 		
 		
-		JButton btnPayment = new JButton("Payment");
+		btnPayment = new JButton("Payment");
 		btnPayment.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -230,14 +256,30 @@ public class Sale_Panel extends JPanel {
 		btnPayment.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnPayment.setBounds(72, 361, 101, 19);
 		add(btnPayment);
+		btnPayment.setEnabled(false);
 		
 		JButton btnCancelSale = new JButton("Cancel Sale");
 		btnCancelSale.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				contentPane.removeAll();
-				contentPane.add(new Sale_Panel(contentPane, myStore, session, new Sale()));
-				contentPane.revalidate();
+				int response = JOptionPane.showConfirmDialog(
+			            null,
+			            "Do you want to cancel?",
+			            "Cancel Confirmation",
+			            JOptionPane.YES_NO_OPTION,
+			            JOptionPane.QUESTION_MESSAGE
+			        );
+				
+				if(response==JOptionPane.YES_OPTION) {
+					contentPane.removeAll();
+					contentPane.add(new Sale_Panel(contentPane, myStore, session, new Sale()));
+					contentPane.revalidate();
+				}
+				else {
+					contentPane.repaint();
+					}
+				
+				
 			}
 		});
 		btnCancelSale.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -261,6 +303,7 @@ public class Sale_Panel extends JPanel {
 		btnCompleteSale.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnCompleteSale.setBounds(216, 360, 107, 21);
 		add(btnCompleteSale);
+		btnCompleteSale.setEnabled(false);
 		
 		JButton btnEndSession = new JButton("End Session");
 		btnEndSession.addActionListener(new ActionListener() {
@@ -275,6 +318,13 @@ public class Sale_Panel extends JPanel {
 		btnEndSession.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnEndSession.setBounds(216, 406, 107, 21);
 		add(btnEndSession);
+		
+		lblItemNotFound = new JLabel("ITEM NOT FOUND");
+		lblItemNotFound.setForeground(new Color(255, 0, 0));
+		lblItemNotFound.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblItemNotFound.setBounds(180, 112, 101, 15);
+		add(lblItemNotFound);
+		lblItemNotFound.setVisible(false);
 		
 
 	}

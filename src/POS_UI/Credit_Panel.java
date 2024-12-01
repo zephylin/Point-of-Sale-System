@@ -59,6 +59,7 @@ public class Credit_Panel extends JPanel {
 		add(lblNewLabel_1_2);
 		
 		JLabel lblNewLabel_1_3 = new JLabel("Expire Date");
+		lblNewLabel_1_3.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		lblNewLabel_1_3.setBounds(62, 166, 82, 19);
 		add(lblNewLabel_1_3);
 		
@@ -118,6 +119,11 @@ public class Credit_Panel extends JPanel {
 		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnCancel.setBounds(213, 205, 85, 21);
 		add(btnCancel);
+		
+		JLabel lblNewLabel_2 = new JLabel("m/d/yyyy");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblNewLabel_2.setBounds(265, 169, 45, 13);
+		add(lblNewLabel_2);
 		
 	}
 }
