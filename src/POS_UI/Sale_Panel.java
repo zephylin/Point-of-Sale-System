@@ -117,7 +117,8 @@ public class Sale_Panel extends JPanel {
 		itemField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				Item item = myStore.findItemForNumber(itemField.getText());
+				//Item item = myStore.findItemForNumber(itemField.getText());
+				Item item = myStore.findItemForUPC(itemField.getText());
 				if(item != null) {
 					SaleLineItem sli = new SaleLineItem(sale, item, quantityField.getText());
 					sliListModel.addElement(sli);
@@ -160,7 +161,7 @@ public class Sale_Panel extends JPanel {
 					sale.setTaxFree(true);
 					taxField.setText(sale.calcTax().toString());
 					totalField.setText(sale.calcTotal().toString());
-					if(!sale.getTotalPayments().equals(0)) {
+					if(!sale.getTotalPayments().equals(BigDecimal.ZERO)) {
 						changeField.setText(sale.calcChange().toString());
 					}
 				}
@@ -168,7 +169,7 @@ public class Sale_Panel extends JPanel {
 					sale.setTaxFree(false);
 					taxField.setText(sale.calcTax().toString());
 					totalField.setText(sale.calcTotal().toString());
-					if(!sale.getTotalPayments().equals(0)) {
+					if(!sale.getTotalPayments().equals(BigDecimal.ZERO)) {
 						changeField.setText(sale.calcChange().toString());
 					}
 				}
@@ -309,6 +310,7 @@ public class Sale_Panel extends JPanel {
 		btnEndSession.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
+				session.setEndDateTime(LocalDateTime.now());
 				myStore.addSession(session);
 				contentPane.removeAll();
 				contentPane.add( new EndSession_Panel(contentPane, myStore, session));
