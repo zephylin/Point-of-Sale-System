@@ -1,0 +1,73 @@
+# ============================================
+# Java Build Artifacts
+# ============================================
+# Compiled class files
+bin/
+*.class
+
+# Eclipse project files
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+
+# ============================================
+# Maven/Gradle
+# ============================================
+target/
+build/
+.gradle/
+
+# ============================================
+# Logs
+# ============================================
+*.log
+logs/
+
+# ============================================
+# OS Files
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ============================================
+# IDE Temp Files
+# ============================================
+*.swp
+*.swo
+*~
+.tmp
+
+# ============================================
+# Application Specific
+# ============================================
+# Output logs from Spring Boot
+output.log
+error.log
+
+# Local environment variables
+.env
+.env.local
+
+# Database files (if using file-based DB)
+*.db
+*.sqlite
