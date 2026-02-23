@@ -1,6 +1,8 @@
 package com.pos.backend.controller;
 
 import com.pos.backend.domain.Person;
+import com.pos.backend.dto.PersonDTO;
+import com.pos.backend.mapper.PersonMapper;
 import com.pos.backend.service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Person REST Controller
@@ -80,6 +83,7 @@ public class PersonController {
      * Spring automatically injects this when controller is created
      */
     private final PersonService personService;
+    private final PersonMapper personMapper;
 
     /**
      * GET /api/persons
@@ -105,9 +109,11 @@ public class PersonController {
      */
     @GetMapping
     @Operation(summary = "Get all persons", description = "Retrieves a list of all persons in the system")
-    public ResponseEntity<List<Person>> getAllPersons() {
+    public ResponseEntity<List<PersonDTO.Response>> getAllPersons() {
         log.info("REST: GET /api/persons - Getting all persons");
-        List<Person> persons = personService.getAllPersons();
+        List<PersonDTO.Response> persons = personService.getAllPersons().stream()
+                .map(personMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(persons);  // 200 OK
     }
 
@@ -133,10 +139,10 @@ public class PersonController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "Get person by ID", description = "Retrieves a specific person by their ID")
-    public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
+    public ResponseEntity<PersonDTO.Response> getPersonById(@PathVariable Long id) {
         log.info("REST: GET /api/persons/{} - Getting person by ID", id);
         Person person = personService.getPersonById(id);
-        return ResponseEntity.ok(person);  // 200 OK
+        return ResponseEntity.ok(personMapper.toResponse(person));  // 200 OK
     }
 
     /**
@@ -151,10 +157,10 @@ public class PersonController {
      */
     @GetMapping("/ssn/{ssn}")
     @Operation(summary = "Get person by SSN", description = "Retrieves a person by their Social Security Number")
-    public ResponseEntity<Person> getPersonBySsn(@PathVariable String ssn) {
+    public ResponseEntity<PersonDTO.Response> getPersonBySsn(@PathVariable String ssn) {
         log.info("REST: GET /api/persons/ssn/{} - Getting person by SSN", ssn);
         Person person = personService.getPersonBySsn(ssn);
-        return ResponseEntity.ok(person);  // 200 OK
+        return ResponseEntity.ok(personMapper.toResponse(person));  // 200 OK
     }
 
     /**
@@ -171,9 +177,11 @@ public class PersonController {
      */
     @GetMapping("/search")
     @Operation(summary = "Search persons by name", description = "Searches persons by first or last name (case insensitive)")
-    public ResponseEntity<List<Person>> searchPersons(@RequestParam String name) {
+    public ResponseEntity<List<PersonDTO.Response>> searchPersons(@RequestParam String name) {
         log.info("REST: GET /api/persons/search?name={} - Searching persons", name);
-        List<Person> persons = personService.searchPersonsByName(name);
+        List<PersonDTO.Response> persons = personService.searchPersonsByName(name).stream()
+                .map(personMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(persons);  // 200 OK
     }
 
@@ -189,9 +197,11 @@ public class PersonController {
      */
     @GetMapping("/state/{state}")
     @Operation(summary = "Get persons by state", description = "Retrieves all persons in a specific state")
-    public ResponseEntity<List<Person>> getPersonsByState(@PathVariable String state) {
+    public ResponseEntity<List<PersonDTO.Response>> getPersonsByState(@PathVariable String state) {
         log.info("REST: GET /api/persons/state/{} - Getting persons by state", state);
-        List<Person> persons = personService.getPersonsByState(state);
+        List<PersonDTO.Response> persons = personService.getPersonsByState(state).stream()
+                .map(personMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(persons);  // 200 OK
     }
 
@@ -229,13 +239,14 @@ public class PersonController {
      */
     @PostMapping
     @Operation(summary = "Create new person", description = "Creates a new person in the system")
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+    public ResponseEntity<PersonDTO.Response> createPerson(@RequestBody PersonDTO.Request request) {
         log.info("REST: POST /api/persons - Creating new person: {} {}",
-                person.getFirstName(), person.getLastName());
+                request.getFirstName(), request.getLastName());
         
         try {
+            Person person = personMapper.toEntity(request);
             Person createdPerson = personService.createPerson(person);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);  // 201 CREATED
+            return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponse(createdPerson));  // 201 CREATED
         } catch (IllegalArgumentException e) {
             log.error("Validation error: {}", e.getMessage());
             return ResponseEntity.badRequest().build();  // 400 BAD REQUEST
@@ -264,12 +275,13 @@ public class PersonController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "Update person", description = "Updates an existing person's information")
-    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person person) {
+    public ResponseEntity<PersonDTO.Response> updatePerson(@PathVariable Long id, @RequestBody PersonDTO.Request request) {
         log.info("REST: PUT /api/persons/{} - Updating person", id);
         
         try {
+            Person person = personMapper.toEntity(request);
             Person updatedPerson = personService.updatePerson(id, person);
-            return ResponseEntity.ok(updatedPerson);  // 200 OK
+            return ResponseEntity.ok(personMapper.toResponse(updatedPerson));  // 200 OK
         } catch (RuntimeException e) {
             log.error("Error updating person: {}", e.getMessage());
             return ResponseEntity.notFound().build();  // 404 NOT FOUND

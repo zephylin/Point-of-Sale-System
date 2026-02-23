@@ -1,6 +1,8 @@
 package com.pos.backend.controller;
 
 import com.pos.backend.domain.Store;
+import com.pos.backend.dto.StoreDTO;
+import com.pos.backend.mapper.StoreMapper;
 import com.pos.backend.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST Controller for Store operations.
@@ -30,13 +33,16 @@ import java.util.List;
 public class StoreController {
     
     private final StoreService storeService;
+    private final StoreMapper storeMapper;
     
     @Operation(summary = "Get all stores", description = "Retrieve a list of all stores")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     @GetMapping
-    public ResponseEntity<List<Store>> getAllStores() {
+    public ResponseEntity<List<StoreDTO.Response>> getAllStores() {
         log.debug("GET /api/stores - Get all stores");
-        List<Store> stores = storeService.findAll();
+        List<StoreDTO.Response> stores = storeService.findAll().stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(stores);
     }
     
@@ -46,10 +52,11 @@ public class StoreController {
         @ApiResponse(responseCode = "404", description = "Store not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Store> getStoreById(
+    public ResponseEntity<StoreDTO.Response> getStoreById(
             @Parameter(description = "Store ID") @PathVariable Long id) {
         log.debug("GET /api/stores/{} - Get store by id", id);
         return storeService.findById(id)
+                .map(storeMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -60,10 +67,11 @@ public class StoreController {
         @ApiResponse(responseCode = "404", description = "Store not found")
     })
     @GetMapping("/number/{number}")
-    public ResponseEntity<Store> getStoreByNumber(
+    public ResponseEntity<StoreDTO.Response> getStoreByNumber(
             @Parameter(description = "Store number") @PathVariable String number) {
         log.debug("GET /api/stores/number/{} - Get store by number", number);
         return storeService.findByNumber(number)
+                .map(storeMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -71,60 +79,72 @@ public class StoreController {
     @Operation(summary = "Search stores by name", description = "Search stores by name keyword")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved search results")
     @GetMapping("/search")
-    public ResponseEntity<List<Store>> searchStores(
+    public ResponseEntity<List<StoreDTO.Response>> searchStores(
             @Parameter(description = "Search keyword") @RequestParam String name) {
         log.debug("GET /api/stores/search?name={} - Search stores", name);
-        List<Store> results = storeService.searchByName(name);
+        List<StoreDTO.Response> results = storeService.searchByName(name).stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(results);
     }
     
     @Operation(summary = "Get stores by city", description = "Retrieve all stores in a specific city")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved stores")
     @GetMapping("/city/{city}")
-    public ResponseEntity<List<Store>> getStoresByCity(
+    public ResponseEntity<List<StoreDTO.Response>> getStoresByCity(
             @Parameter(description = "City name") @PathVariable String city) {
         log.debug("GET /api/stores/city/{} - Get stores by city", city);
-        List<Store> stores = storeService.findByCity(city);
+        List<StoreDTO.Response> stores = storeService.findByCity(city).stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(stores);
     }
     
     @Operation(summary = "Get stores by state", description = "Retrieve all stores in a specific state")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved stores")
     @GetMapping("/state/{state}")
-    public ResponseEntity<List<Store>> getStoresByState(
+    public ResponseEntity<List<StoreDTO.Response>> getStoresByState(
             @Parameter(description = "State code (2 letters)") @PathVariable String state) {
         log.debug("GET /api/stores/state/{} - Get stores by state", state);
-        List<Store> stores = storeService.findByState(state);
+        List<StoreDTO.Response> stores = storeService.findByState(state).stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(stores);
     }
     
     @Operation(summary = "Get stores by location", description = "Retrieve stores by city and state")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved stores")
     @GetMapping("/location")
-    public ResponseEntity<List<Store>> getStoresByLocation(
+    public ResponseEntity<List<StoreDTO.Response>> getStoresByLocation(
             @Parameter(description = "City name") @RequestParam String city,
             @Parameter(description = "State code") @RequestParam String state) {
         log.debug("GET /api/stores/location?city={}&state={} - Get stores by location", city, state);
-        List<Store> stores = storeService.findByCityAndState(city, state);
+        List<StoreDTO.Response> stores = storeService.findByCityAndState(city, state).stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(stores);
     }
     
     @Operation(summary = "Get active stores", description = "Retrieve all active stores")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved active stores")
     @GetMapping("/active")
-    public ResponseEntity<List<Store>> getActiveStores() {
+    public ResponseEntity<List<StoreDTO.Response>> getActiveStores() {
         log.debug("GET /api/stores/active - Get active stores");
-        List<Store> stores = storeService.findAllActive();
+        List<StoreDTO.Response> stores = storeService.findAllActive().stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(stores);
     }
     
     @Operation(summary = "Get stores by manager", description = "Retrieve stores managed by a specific person")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved stores")
     @GetMapping("/manager/{manager}")
-    public ResponseEntity<List<Store>> getStoresByManager(
+    public ResponseEntity<List<StoreDTO.Response>> getStoresByManager(
             @Parameter(description = "Manager name") @PathVariable String manager) {
         log.debug("GET /api/stores/manager/{} - Get stores by manager", manager);
-        List<Store> stores = storeService.findByManager(manager);
+        List<StoreDTO.Response> stores = storeService.findByManager(manager).stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(stores);
     }
     
@@ -134,11 +154,12 @@ public class StoreController {
         @ApiResponse(responseCode = "400", description = "Invalid input or duplicate store number")
     })
     @PostMapping
-    public ResponseEntity<?> createStore(@RequestBody Store store) {
-        log.debug("POST /api/stores - Create store: {}", store.getNumber());
+    public ResponseEntity<?> createStore(@RequestBody StoreDTO.Request request) {
+        log.debug("POST /api/stores - Create store: {}", request.getNumber());
         try {
+            Store store = storeMapper.toEntity(request);
             Store created = storeService.create(store);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            return ResponseEntity.status(HttpStatus.CREATED).body(storeMapper.toResponse(created));
         } catch (IllegalArgumentException e) {
             log.error("Error creating store: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -154,11 +175,12 @@ public class StoreController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStore(
             @Parameter(description = "Store ID") @PathVariable Long id,
-            @RequestBody Store store) {
+            @RequestBody StoreDTO.Request request) {
         log.debug("PUT /api/stores/{} - Update store", id);
         try {
+            Store store = storeMapper.toEntity(request);
             Store updated = storeService.update(id, store);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(storeMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             log.error("Error updating store: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -194,7 +216,7 @@ public class StoreController {
         log.debug("PATCH /api/stores/{}/deactivate - Deactivate store", id);
         try {
             Store deactivated = storeService.deactivate(id);
-            return ResponseEntity.ok(deactivated);
+            return ResponseEntity.ok(storeMapper.toResponse(deactivated));
         } catch (IllegalArgumentException e) {
             log.error("Error deactivating store: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -212,7 +234,7 @@ public class StoreController {
         log.debug("PATCH /api/stores/{}/activate - Activate store", id);
         try {
             Store activated = storeService.activate(id);
-            return ResponseEntity.ok(activated);
+            return ResponseEntity.ok(storeMapper.toResponse(activated));
         } catch (IllegalArgumentException e) {
             log.error("Error activating store: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
