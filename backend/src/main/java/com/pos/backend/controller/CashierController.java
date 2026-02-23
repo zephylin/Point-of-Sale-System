@@ -6,6 +6,7 @@ import com.pos.backend.mapper.CashierMapper;
 import com.pos.backend.service.CashierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,48 +80,32 @@ public class CashierController {
     
     @Operation(summary = "Create cashier")
     @PostMapping
-    public ResponseEntity<?> createCashier(@RequestBody CashierDTO.Request request) {
-        try {
-            Cashier cashier = cashierMapper.toEntity(request);
-            Cashier created = cashierService.create(cashier);
-            return ResponseEntity.status(HttpStatus.CREATED).body(cashierMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createCashier(@Valid @RequestBody CashierDTO.Request request) {
+        Cashier cashier = cashierMapper.toEntity(request);
+        Cashier created = cashierService.create(cashier);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cashierMapper.toResponse(created));
     }
     
     @Operation(summary = "Update cashier")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCashier(@PathVariable Long id, @RequestBody CashierDTO.Request request) {
-        try {
-            Cashier cashier = cashierMapper.toEntity(request);
-            Cashier updated = cashierService.update(id, cashier);
-            return ResponseEntity.ok(cashierMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateCashier(@PathVariable Long id, @Valid @RequestBody CashierDTO.Request request) {
+        Cashier cashier = cashierMapper.toEntity(request);
+        Cashier updated = cashierService.update(id, cashier);
+        return ResponseEntity.ok(cashierMapper.toResponse(updated));
     }
     
     @Operation(summary = "Terminate cashier")
     @PatchMapping("/{id}/terminate")
     public ResponseEntity<?> terminateCashier(@PathVariable Long id) {
-        try {
-            Cashier terminated = cashierService.terminate(id);
-            return ResponseEntity.ok(cashierMapper.toResponse(terminated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Cashier terminated = cashierService.terminate(id);
+        return ResponseEntity.ok(cashierMapper.toResponse(terminated));
     }
     
     @Operation(summary = "Delete cashier")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCashier(@PathVariable Long id) {
-        try {
-            cashierService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        cashierService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Count cashiers")

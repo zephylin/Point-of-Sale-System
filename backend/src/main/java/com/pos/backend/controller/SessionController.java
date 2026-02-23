@@ -6,6 +6,7 @@ import com.pos.backend.mapper.SessionMapper;
 import com.pos.backend.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,49 +105,33 @@ public class SessionController {
     
     @Operation(summary = "Create session")
     @PostMapping
-    public ResponseEntity<?> createSession(@RequestBody SessionDTO.Request request) {
-        try {
-            Session session = sessionMapper.toEntity(request);
-            Session created = sessionService.create(session);
-            return ResponseEntity.status(HttpStatus.CREATED).body(sessionMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createSession(@Valid @RequestBody SessionDTO.Request request) {
+        Session session = sessionMapper.toEntity(request);
+        Session created = sessionService.create(session);
+        return ResponseEntity.status(HttpStatus.CREATED).body(sessionMapper.toResponse(created));
     }
     
     @Operation(summary = "Update session")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSession(@PathVariable Long id, @RequestBody SessionDTO.Request request) {
-        try {
-            Session session = sessionMapper.toEntity(request);
-            Session updated = sessionService.update(id, session);
-            return ResponseEntity.ok(sessionMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateSession(@PathVariable Long id, @Valid @RequestBody SessionDTO.Request request) {
+        Session session = sessionMapper.toEntity(request);
+        Session updated = sessionService.update(id, session);
+        return ResponseEntity.ok(sessionMapper.toResponse(updated));
     }
     
     @Operation(summary = "Close session")
     @PatchMapping("/{id}/close")
     public ResponseEntity<?> closeSession(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        try {
-            BigDecimal endingCash = new BigDecimal(request.get("endingCash"));
-            Session closed = sessionService.closeSession(id, endingCash);
-            return ResponseEntity.ok(sessionMapper.toResponse(closed));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        BigDecimal endingCash = new BigDecimal(request.get("endingCash"));
+        Session closed = sessionService.closeSession(id, endingCash);
+        return ResponseEntity.ok(sessionMapper.toResponse(closed));
     }
     
     @Operation(summary = "Delete session")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSession(@PathVariable Long id) {
-        try {
-            sessionService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        sessionService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Count sessions")

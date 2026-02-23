@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -220,16 +221,11 @@ public class ItemController {
         @ApiResponse(responseCode = "400", description = "Invalid input or duplicate item")
     })
     @PostMapping
-    public ResponseEntity<?> createItem(@RequestBody ItemDTO.Request request) {
+    public ResponseEntity<?> createItem(@Valid @RequestBody ItemDTO.Request request) {
         log.debug("POST /api/items - Create item: {}", request.getNumber());
-        try {
-            Item item = itemMapper.toEntity(request);
-            Item created = itemService.create(item);
-            return ResponseEntity.status(HttpStatus.CREATED).body(itemMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            log.error("Error creating item: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Item item = itemMapper.toEntity(request);
+        Item created = itemService.create(item);
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemMapper.toResponse(created));
     }
     
     @Operation(summary = "Update item", description = "Update an existing item")
@@ -241,16 +237,11 @@ public class ItemController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateItem(
             @Parameter(description = "Item ID") @PathVariable Long id,
-            @RequestBody ItemDTO.Request request) {
+            @Valid @RequestBody ItemDTO.Request request) {
         log.debug("PUT /api/items/{} - Update item", id);
-        try {
-            Item item = itemMapper.toEntity(request);
-            Item updated = itemService.update(id, item);
-            return ResponseEntity.ok(itemMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error updating item: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Item item = itemMapper.toEntity(request);
+        Item updated = itemService.update(id, item);
+        return ResponseEntity.ok(itemMapper.toResponse(updated));
     }
     
     @Operation(summary = "Update item quantity", description = "Update the quantity of an item")
@@ -264,17 +255,12 @@ public class ItemController {
             @Parameter(description = "Item ID") @PathVariable Long id,
             @RequestBody Map<String, Integer> request) {
         log.debug("PATCH /api/items/{}/quantity - Update item quantity", id);
-        try {
-            Integer quantity = request.get("quantity");
-            if (quantity == null) {
-                return ResponseEntity.badRequest().body("Quantity is required");
-            }
-            Item updated = itemService.updateQuantity(id, quantity);
-            return ResponseEntity.ok(itemMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error updating item quantity: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+        Integer quantity = request.get("quantity");
+        if (quantity == null) {
+            throw new IllegalArgumentException("Quantity is required");
         }
+        Item updated = itemService.updateQuantity(id, quantity);
+        return ResponseEntity.ok(itemMapper.toResponse(updated));
     }
     
     @Operation(summary = "Adjust item quantity", description = "Adjust the quantity of an item (add or subtract)")
@@ -288,17 +274,12 @@ public class ItemController {
             @Parameter(description = "Item ID") @PathVariable Long id,
             @RequestBody Map<String, Integer> request) {
         log.debug("PATCH /api/items/{}/adjust-quantity - Adjust item quantity", id);
-        try {
-            Integer adjustment = request.get("adjustment");
-            if (adjustment == null) {
-                return ResponseEntity.badRequest().body("Adjustment is required");
-            }
-            Item updated = itemService.adjustQuantity(id, adjustment);
-            return ResponseEntity.ok(itemMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error adjusting item quantity: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+        Integer adjustment = request.get("adjustment");
+        if (adjustment == null) {
+            throw new IllegalArgumentException("Adjustment is required");
         }
+        Item updated = itemService.adjustQuantity(id, adjustment);
+        return ResponseEntity.ok(itemMapper.toResponse(updated));
     }
     
     @Operation(summary = "Delete item", description = "Delete an item by ID")
@@ -310,13 +291,8 @@ public class ItemController {
     public ResponseEntity<?> deleteItem(
             @Parameter(description = "Item ID") @PathVariable Long id) {
         log.debug("DELETE /api/items/{} - Delete item", id);
-        try {
-            itemService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            log.error("Error deleting item: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        itemService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Deactivate item", description = "Deactivate an item (soft delete)")
@@ -328,13 +304,8 @@ public class ItemController {
     public ResponseEntity<?> deactivateItem(
             @Parameter(description = "Item ID") @PathVariable Long id) {
         log.debug("PATCH /api/items/{}/deactivate - Deactivate item", id);
-        try {
-            Item deactivated = itemService.deactivate(id);
-            return ResponseEntity.ok(itemMapper.toResponse(deactivated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error deactivating item: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Item deactivated = itemService.deactivate(id);
+        return ResponseEntity.ok(itemMapper.toResponse(deactivated));
     }
     
     @Operation(summary = "Count items", description = "Get the total count of items")

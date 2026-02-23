@@ -6,6 +6,7 @@ import com.pos.backend.mapper.RegisterMapper;
 import com.pos.backend.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,52 +81,36 @@ public class RegisterController {
     
     @Operation(summary = "Create register")
     @PostMapping
-    public ResponseEntity<?> createRegister(@RequestBody RegisterDTO.Request request) {
-        try {
-            Register register = registerMapper.toEntity(request);
-            Register created = registerService.create(register);
-            return ResponseEntity.status(HttpStatus.CREATED).body(registerMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createRegister(@Valid @RequestBody RegisterDTO.Request request) {
+        Register register = registerMapper.toEntity(request);
+        Register created = registerService.create(register);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registerMapper.toResponse(created));
     }
     
     @Operation(summary = "Update register")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateRegister(@PathVariable Long id, @RequestBody RegisterDTO.Request request) {
-        try {
-            Register register = registerMapper.toEntity(request);
-            Register updated = registerService.update(id, register);
-            return ResponseEntity.ok(registerMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateRegister(@PathVariable Long id, @Valid @RequestBody RegisterDTO.Request request) {
+        Register register = registerMapper.toEntity(request);
+        Register updated = registerService.update(id, register);
+        return ResponseEntity.ok(registerMapper.toResponse(updated));
     }
     
     @Operation(summary = "Update register status")
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> updateRegisterStatus(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        try {
-            String status = request.get("status");
-            if (status == null) {
-                return ResponseEntity.badRequest().body("Status is required");
-            }
-            Register updated = registerService.updateStatus(id, status);
-            return ResponseEntity.ok(registerMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        String status = request.get("status");
+        if (status == null) {
+            throw new IllegalArgumentException("Status is required");
         }
+        Register updated = registerService.updateStatus(id, status);
+        return ResponseEntity.ok(registerMapper.toResponse(updated));
     }
     
     @Operation(summary = "Delete register")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRegister(@PathVariable Long id) {
-        try {
-            registerService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        registerService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Count registers")

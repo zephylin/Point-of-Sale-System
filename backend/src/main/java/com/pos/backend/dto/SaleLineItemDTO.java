@@ -1,5 +1,9 @@
 package com.pos.backend.dto;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,11 +24,24 @@ public class SaleLineItemDTO {
     @AllArgsConstructor
     @Builder
     public static class Request {
+        @NotNull(message = "Sale ID is required")
         private Long saleId;
+
+        @NotNull(message = "Item ID is required")
         private Long itemId;
+
+        @NotNull(message = "Quantity is required")
+        @Min(value = 1, message = "Quantity must be at least 1")
         private Integer quantity;
+
+        @NotNull(message = "Unit price is required")
+        @DecimalMin(value = "0.00", message = "Unit price must be at least 0.00")
         private BigDecimal unitPrice;
+
+        @DecimalMin(value = "0.00", message = "Discount must be at least 0.00")
         private BigDecimal discount;
+
+        @Size(max = 500, message = "Notes must be at most 500 characters")
         private String notes;
     }
 

@@ -1,5 +1,7 @@
 package com.pos.backend.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,10 +23,18 @@ public class SaleDTO {
     @AllArgsConstructor
     @Builder
     public static class Request {
+        @NotNull(message = "Session ID is required")
         private Long sessionId;
+
+        @NotNull(message = "Store ID is required")
         private Long storeId;
+
+        @NotNull(message = "Cashier ID is required")
         private Long cashierId;
+
         private Boolean taxFree;
+
+        @Size(max = 1000, message = "Notes must be at most 1000 characters")
         private String notes;
     }
 

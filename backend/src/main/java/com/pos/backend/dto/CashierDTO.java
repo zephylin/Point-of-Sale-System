@@ -1,5 +1,8 @@
 package com.pos.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,10 +24,21 @@ public class CashierDTO {
     @AllArgsConstructor
     @Builder
     public static class Request {
+        @NotBlank(message = "Cashier number is required")
+        @Size(max = 50, message = "Cashier number must be at most 50 characters")
         private String number;
+
+        @NotBlank(message = "Password is required")
+        @Size(min = 4, max = 255, message = "Password must be between 4 and 255 characters")
         private String password;
+
+        @NotNull(message = "Person ID is required")
         private Long personId;
+
+        @NotNull(message = "Store ID is required")
         private Long storeId;
+
+        @Size(max = 50, message = "Role must be at most 50 characters")
         private String role;
     }
 

@@ -1,5 +1,8 @@
 package com.pos.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +23,14 @@ public class RegisterDTO {
     @AllArgsConstructor
     @Builder
     public static class Request {
+        @NotBlank(message = "Register number is required")
+        @Size(max = 50, message = "Register number must be at most 50 characters")
         private String number;
+
+        @NotNull(message = "Store ID is required")
         private Long storeId;
+
+        @Size(max = 200, message = "Description must be at most 200 characters")
         private String description;
     }
 

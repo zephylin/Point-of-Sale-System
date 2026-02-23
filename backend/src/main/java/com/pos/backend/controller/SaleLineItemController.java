@@ -6,6 +6,7 @@ import com.pos.backend.mapper.SaleLineItemMapper;
 import com.pos.backend.service.SaleLineItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,37 +68,25 @@ public class SaleLineItemController {
     
     @Operation(summary = "Create sale line item")
     @PostMapping
-    public ResponseEntity<?> createSaleLineItem(@RequestBody SaleLineItemDTO.Request request) {
-        try {
-            SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
-            SaleLineItem created = saleLineItemService.create(lineItem);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saleLineItemMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createSaleLineItem(@Valid @RequestBody SaleLineItemDTO.Request request) {
+        SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
+        SaleLineItem created = saleLineItemService.create(lineItem);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saleLineItemMapper.toResponse(created));
     }
     
     @Operation(summary = "Update sale line item")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSaleLineItem(@PathVariable Long id, @RequestBody SaleLineItemDTO.Request request) {
-        try {
-            SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
-            SaleLineItem updated = saleLineItemService.update(id, lineItem);
-            return ResponseEntity.ok(saleLineItemMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateSaleLineItem(@PathVariable Long id, @Valid @RequestBody SaleLineItemDTO.Request request) {
+        SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
+        SaleLineItem updated = saleLineItemService.update(id, lineItem);
+        return ResponseEntity.ok(saleLineItemMapper.toResponse(updated));
     }
     
     @Operation(summary = "Delete sale line item")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSaleLineItem(@PathVariable Long id) {
-        try {
-            saleLineItemService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        saleLineItemService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Count sale line items")

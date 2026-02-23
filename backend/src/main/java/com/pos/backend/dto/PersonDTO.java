@@ -1,5 +1,8 @@
 package com.pos.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,13 +31,30 @@ public class PersonDTO {
     @AllArgsConstructor
     @Builder
     public static class Request {
+        @NotBlank(message = "First name is required")
+        @Size(max = 50, message = "First name must be at most 50 characters")
         private String firstName;
+
+        @NotBlank(message = "Last name is required")
+        @Size(max = 50, message = "Last name must be at most 50 characters")
         private String lastName;
+
+        @Size(max = 200, message = "Address must be at most 200 characters")
         private String address;
+
+        @Size(max = 50, message = "City must be at most 50 characters")
         private String city;
+
+        @Size(min = 2, max = 2, message = "State must be exactly 2 characters")
         private String state;
+
+        @Size(max = 10, message = "ZIP code must be at most 10 characters")
         private String zip;
+
+        @Size(max = 20, message = "Phone must be at most 20 characters")
         private String phone;
+
+        @Pattern(regexp = "^\\d{3}-\\d{2}-\\d{4}$", message = "SSN must be in format XXX-XX-XXXX")
         private String ssn;
     }
 

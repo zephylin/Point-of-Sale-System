@@ -6,6 +6,7 @@ import com.pos.backend.mapper.TaxRateMapper;
 import com.pos.backend.service.TaxRateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,37 +82,25 @@ public class TaxRateController {
     
     @Operation(summary = "Create tax rate")
     @PostMapping
-    public ResponseEntity<?> createTaxRate(@RequestBody TaxRateDTO.Request request) {
-        try {
-            TaxRate taxRate = taxRateMapper.toEntity(request);
-            TaxRate created = taxRateService.create(taxRate);
-            return ResponseEntity.status(HttpStatus.CREATED).body(taxRateMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createTaxRate(@Valid @RequestBody TaxRateDTO.Request request) {
+        TaxRate taxRate = taxRateMapper.toEntity(request);
+        TaxRate created = taxRateService.create(taxRate);
+        return ResponseEntity.status(HttpStatus.CREATED).body(taxRateMapper.toResponse(created));
     }
     
     @Operation(summary = "Update tax rate")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTaxRate(@PathVariable Long id, @RequestBody TaxRateDTO.Request request) {
-        try {
-            TaxRate taxRate = taxRateMapper.toEntity(request);
-            TaxRate updated = taxRateService.update(id, taxRate);
-            return ResponseEntity.ok(taxRateMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateTaxRate(@PathVariable Long id, @Valid @RequestBody TaxRateDTO.Request request) {
+        TaxRate taxRate = taxRateMapper.toEntity(request);
+        TaxRate updated = taxRateService.update(id, taxRate);
+        return ResponseEntity.ok(taxRateMapper.toResponse(updated));
     }
     
     @Operation(summary = "Delete tax rate")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTaxRate(@PathVariable Long id) {
-        try {
-            taxRateService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        taxRateService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Count tax rates")

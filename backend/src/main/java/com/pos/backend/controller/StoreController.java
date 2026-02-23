@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -154,16 +155,11 @@ public class StoreController {
         @ApiResponse(responseCode = "400", description = "Invalid input or duplicate store number")
     })
     @PostMapping
-    public ResponseEntity<?> createStore(@RequestBody StoreDTO.Request request) {
+    public ResponseEntity<?> createStore(@Valid @RequestBody StoreDTO.Request request) {
         log.debug("POST /api/stores - Create store: {}", request.getNumber());
-        try {
-            Store store = storeMapper.toEntity(request);
-            Store created = storeService.create(store);
-            return ResponseEntity.status(HttpStatus.CREATED).body(storeMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            log.error("Error creating store: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Store store = storeMapper.toEntity(request);
+        Store created = storeService.create(store);
+        return ResponseEntity.status(HttpStatus.CREATED).body(storeMapper.toResponse(created));
     }
     
     @Operation(summary = "Update store", description = "Update an existing store")
@@ -175,16 +171,11 @@ public class StoreController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStore(
             @Parameter(description = "Store ID") @PathVariable Long id,
-            @RequestBody StoreDTO.Request request) {
+            @Valid @RequestBody StoreDTO.Request request) {
         log.debug("PUT /api/stores/{} - Update store", id);
-        try {
-            Store store = storeMapper.toEntity(request);
-            Store updated = storeService.update(id, store);
-            return ResponseEntity.ok(storeMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error updating store: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Store store = storeMapper.toEntity(request);
+        Store updated = storeService.update(id, store);
+        return ResponseEntity.ok(storeMapper.toResponse(updated));
     }
     
     @Operation(summary = "Delete store", description = "Delete a store by ID")
@@ -196,13 +187,8 @@ public class StoreController {
     public ResponseEntity<?> deleteStore(
             @Parameter(description = "Store ID") @PathVariable Long id) {
         log.debug("DELETE /api/stores/{} - Delete store", id);
-        try {
-            storeService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            log.error("Error deleting store: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        storeService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Deactivate store", description = "Deactivate a store (soft delete)")
@@ -214,13 +200,8 @@ public class StoreController {
     public ResponseEntity<?> deactivateStore(
             @Parameter(description = "Store ID") @PathVariable Long id) {
         log.debug("PATCH /api/stores/{}/deactivate - Deactivate store", id);
-        try {
-            Store deactivated = storeService.deactivate(id);
-            return ResponseEntity.ok(storeMapper.toResponse(deactivated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error deactivating store: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Store deactivated = storeService.deactivate(id);
+        return ResponseEntity.ok(storeMapper.toResponse(deactivated));
     }
     
     @Operation(summary = "Activate store", description = "Activate a previously deactivated store")
@@ -232,13 +213,8 @@ public class StoreController {
     public ResponseEntity<?> activateStore(
             @Parameter(description = "Store ID") @PathVariable Long id) {
         log.debug("PATCH /api/stores/{}/activate - Activate store", id);
-        try {
-            Store activated = storeService.activate(id);
-            return ResponseEntity.ok(storeMapper.toResponse(activated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error activating store: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Store activated = storeService.activate(id);
+        return ResponseEntity.ok(storeMapper.toResponse(activated));
     }
     
     @Operation(summary = "Count stores", description = "Get the total count of stores")

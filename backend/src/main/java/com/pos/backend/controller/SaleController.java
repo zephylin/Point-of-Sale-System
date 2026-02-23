@@ -6,6 +6,7 @@ import com.pos.backend.mapper.SaleMapper;
 import com.pos.backend.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -107,62 +108,42 @@ public class SaleController {
     
     @Operation(summary = "Create sale")
     @PostMapping
-    public ResponseEntity<?> createSale(@RequestBody SaleDTO.Request request) {
-        try {
-            Sale sale = saleMapper.toEntity(request);
-            Sale created = saleService.create(sale);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saleMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createSale(@Valid @RequestBody SaleDTO.Request request) {
+        Sale sale = saleMapper.toEntity(request);
+        Sale created = saleService.create(sale);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saleMapper.toResponse(created));
     }
     
     @Operation(summary = "Update sale")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSale(@PathVariable Long id, @RequestBody SaleDTO.Request request) {
-        try {
-            Sale sale = saleMapper.toEntity(request);
-            Sale updated = saleService.update(id, sale);
-            return ResponseEntity.ok(saleMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateSale(@PathVariable Long id, @Valid @RequestBody SaleDTO.Request request) {
+        Sale sale = saleMapper.toEntity(request);
+        Sale updated = saleService.update(id, sale);
+        return ResponseEntity.ok(saleMapper.toResponse(updated));
     }
     
     @Operation(summary = "Complete sale")
     @PatchMapping("/{id}/complete")
     public ResponseEntity<?> completeSale(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        try {
-            BigDecimal amountPaid = new BigDecimal(request.get("amountPaid"));
-            String paymentMethod = request.get("paymentMethod");
-            Sale completed = saleService.completeSale(id, amountPaid, paymentMethod);
-            return ResponseEntity.ok(saleMapper.toResponse(completed));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        BigDecimal amountPaid = new BigDecimal(request.get("amountPaid"));
+        String paymentMethod = request.get("paymentMethod");
+        Sale completed = saleService.completeSale(id, amountPaid, paymentMethod);
+        return ResponseEntity.ok(saleMapper.toResponse(completed));
     }
     
     @Operation(summary = "Void sale")
     @PatchMapping("/{id}/void")
     public ResponseEntity<?> voidSale(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        try {
-            String reason = request.get("reason");
-            Sale voided = saleService.voidSale(id, reason);
-            return ResponseEntity.ok(saleMapper.toResponse(voided));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String reason = request.get("reason");
+        Sale voided = saleService.voidSale(id, reason);
+        return ResponseEntity.ok(saleMapper.toResponse(voided));
     }
     
     @Operation(summary = "Delete sale")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSale(@PathVariable Long id) {
-        try {
-            saleService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        saleService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Count sales")

@@ -1,5 +1,9 @@
 package com.pos.backend.dto;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,9 +25,18 @@ public class TaxRateDTO {
     @AllArgsConstructor
     @Builder
     public static class Request {
+        @NotNull(message = "Tax rate is required")
+        @DecimalMin(value = "0.0000", message = "Tax rate must be at least 0.0000")
+        @DecimalMax(value = "1.0000", message = "Tax rate must be at most 1.0000")
         private BigDecimal rate;
+
+        @NotNull(message = "Effective date is required")
         private LocalDate effectiveDate;
+
+        @NotNull(message = "Tax category ID is required")
         private Long taxCategoryId;
+
+        @Size(max = 500, message = "Description must be at most 500 characters")
         private String description;
     }
 

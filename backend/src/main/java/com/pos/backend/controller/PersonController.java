@@ -6,6 +6,7 @@ import com.pos.backend.mapper.PersonMapper;
 import com.pos.backend.service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -239,18 +240,12 @@ public class PersonController {
      */
     @PostMapping
     @Operation(summary = "Create new person", description = "Creates a new person in the system")
-    public ResponseEntity<PersonDTO.Response> createPerson(@RequestBody PersonDTO.Request request) {
+    public ResponseEntity<PersonDTO.Response> createPerson(@Valid @RequestBody PersonDTO.Request request) {
         log.info("REST: POST /api/persons - Creating new person: {} {}",
                 request.getFirstName(), request.getLastName());
-        
-        try {
-            Person person = personMapper.toEntity(request);
-            Person createdPerson = personService.createPerson(person);
-            return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponse(createdPerson));  // 201 CREATED
-        } catch (IllegalArgumentException e) {
-            log.error("Validation error: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();  // 400 BAD REQUEST
-        }
+        Person person = personMapper.toEntity(request);
+        Person createdPerson = personService.createPerson(person);
+        return ResponseEntity.status(HttpStatus.CREATED).body(personMapper.toResponse(createdPerson));
     }
 
     /**
@@ -275,17 +270,11 @@ public class PersonController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "Update person", description = "Updates an existing person's information")
-    public ResponseEntity<PersonDTO.Response> updatePerson(@PathVariable Long id, @RequestBody PersonDTO.Request request) {
+    public ResponseEntity<PersonDTO.Response> updatePerson(@PathVariable Long id, @Valid @RequestBody PersonDTO.Request request) {
         log.info("REST: PUT /api/persons/{} - Updating person", id);
-        
-        try {
-            Person person = personMapper.toEntity(request);
-            Person updatedPerson = personService.updatePerson(id, person);
-            return ResponseEntity.ok(personMapper.toResponse(updatedPerson));  // 200 OK
-        } catch (RuntimeException e) {
-            log.error("Error updating person: {}", e.getMessage());
-            return ResponseEntity.notFound().build();  // 404 NOT FOUND
-        }
+        Person person = personMapper.toEntity(request);
+        Person updatedPerson = personService.updatePerson(id, person);
+        return ResponseEntity.ok(personMapper.toResponse(updatedPerson));
     }
 
     /**
@@ -305,14 +294,8 @@ public class PersonController {
     @Operation(summary = "Delete person", description = "Deletes a person from the system")
     public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
         log.info("REST: DELETE /api/persons/{} - Deleting person", id);
-        
-        try {
-            personService.deletePerson(id);
-            return ResponseEntity.noContent().build();  // 204 NO CONTENT
-        } catch (RuntimeException e) {
-            log.error("Error deleting person: {}", e.getMessage());
-            return ResponseEntity.notFound().build();  // 404 NOT FOUND
-        }
+        personService.deletePerson(id);
+        return ResponseEntity.noContent().build();
     }
 
     /**

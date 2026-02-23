@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -105,16 +106,11 @@ public class TaxCategoryController {
         @ApiResponse(responseCode = "400", description = "Invalid input or duplicate category")
     })
     @PostMapping
-    public ResponseEntity<?> createTaxCategory(@RequestBody TaxCategoryDTO.Request request) {
+    public ResponseEntity<?> createTaxCategory(@Valid @RequestBody TaxCategoryDTO.Request request) {
         log.debug("POST /api/tax-categories - Create tax category: {}", request.getCategory());
-        try {
-            TaxCategory taxCategory = taxCategoryMapper.toEntity(request);
-            TaxCategory created = taxCategoryService.create(taxCategory);
-            return ResponseEntity.status(HttpStatus.CREATED).body(taxCategoryMapper.toResponse(created));
-        } catch (IllegalArgumentException e) {
-            log.error("Error creating tax category: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        TaxCategory taxCategory = taxCategoryMapper.toEntity(request);
+        TaxCategory created = taxCategoryService.create(taxCategory);
+        return ResponseEntity.status(HttpStatus.CREATED).body(taxCategoryMapper.toResponse(created));
     }
     
     @Operation(summary = "Update tax category", description = "Update an existing tax category")
@@ -126,16 +122,11 @@ public class TaxCategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTaxCategory(
             @Parameter(description = "Tax category ID") @PathVariable Long id,
-            @RequestBody TaxCategoryDTO.Request request) {
+            @Valid @RequestBody TaxCategoryDTO.Request request) {
         log.debug("PUT /api/tax-categories/{} - Update tax category", id);
-        try {
-            TaxCategory taxCategory = taxCategoryMapper.toEntity(request);
-            TaxCategory updated = taxCategoryService.update(id, taxCategory);
-            return ResponseEntity.ok(taxCategoryMapper.toResponse(updated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error updating tax category: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        TaxCategory taxCategory = taxCategoryMapper.toEntity(request);
+        TaxCategory updated = taxCategoryService.update(id, taxCategory);
+        return ResponseEntity.ok(taxCategoryMapper.toResponse(updated));
     }
     
     @Operation(summary = "Delete tax category", description = "Delete a tax category by ID")
@@ -147,13 +138,8 @@ public class TaxCategoryController {
     public ResponseEntity<?> deleteTaxCategory(
             @Parameter(description = "Tax category ID") @PathVariable Long id) {
         log.debug("DELETE /api/tax-categories/{} - Delete tax category", id);
-        try {
-            taxCategoryService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            log.error("Error deleting tax category: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        taxCategoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary = "Deactivate tax category", description = "Deactivate a tax category (soft delete)")
@@ -165,13 +151,8 @@ public class TaxCategoryController {
     public ResponseEntity<?> deactivateTaxCategory(
             @Parameter(description = "Tax category ID") @PathVariable Long id) {
         log.debug("PATCH /api/tax-categories/{}/deactivate - Deactivate tax category", id);
-        try {
-            TaxCategory deactivated = taxCategoryService.deactivate(id);
-            return ResponseEntity.ok(taxCategoryMapper.toResponse(deactivated));
-        } catch (IllegalArgumentException e) {
-            log.error("Error deactivating tax category: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        TaxCategory deactivated = taxCategoryService.deactivate(id);
+        return ResponseEntity.ok(taxCategoryMapper.toResponse(deactivated));
     }
     
     @Operation(summary = "Count tax categories", description = "Get the total count of tax categories")
