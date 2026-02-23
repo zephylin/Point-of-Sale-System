@@ -1,6 +1,8 @@
 package com.pos.backend.controller;
 
 import com.pos.backend.domain.Register;
+import com.pos.backend.dto.RegisterDTO;
+import com.pos.backend.mapper.RegisterMapper;
 import com.pos.backend.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/registers")
@@ -19,52 +22,69 @@ import java.util.Map;
 public class RegisterController {
     
     private final RegisterService registerService;
+    private final RegisterMapper registerMapper;
     
     @Operation(summary = "Get all registers")
     @GetMapping
-    public ResponseEntity<List<Register>> getAllRegisters() {
-        return ResponseEntity.ok(registerService.findAll());
+    public ResponseEntity<List<RegisterDTO.Response>> getAllRegisters() {
+        List<RegisterDTO.Response> registers = registerService.findAll().stream()
+                .map(registerMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(registers);
     }
     
     @Operation(summary = "Get register by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Register> getRegisterById(@PathVariable Long id) {
+    public ResponseEntity<RegisterDTO.Response> getRegisterById(@PathVariable Long id) {
         return registerService.findById(id)
+                .map(registerMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @Operation(summary = "Get register by number")
     @GetMapping("/number/{number}")
-    public ResponseEntity<Register> getRegisterByNumber(@PathVariable String number) {
+    public ResponseEntity<RegisterDTO.Response> getRegisterByNumber(@PathVariable String number) {
         return registerService.findByNumber(number)
+                .map(registerMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @Operation(summary = "Get registers by store")
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<Register>> getRegistersByStore(@PathVariable Long storeId) {
-        return ResponseEntity.ok(registerService.findByStore(storeId));
+    public ResponseEntity<List<RegisterDTO.Response>> getRegistersByStore(@PathVariable Long storeId) {
+        List<RegisterDTO.Response> registers = registerService.findByStore(storeId).stream()
+                .map(registerMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(registers);
     }
     
     @Operation(summary = "Get active registers")
     @GetMapping("/active")
-    public ResponseEntity<List<Register>> getActiveRegisters() {
-        return ResponseEntity.ok(registerService.findAllActive());
+    public ResponseEntity<List<RegisterDTO.Response>> getActiveRegisters() {
+        List<RegisterDTO.Response> registers = registerService.findAllActive().stream()
+                .map(registerMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(registers);
     }
     
     @Operation(summary = "Get registers by status")
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Register>> getRegistersByStatus(@PathVariable String status) {
-        return ResponseEntity.ok(registerService.findByStatus(status));
+    public ResponseEntity<List<RegisterDTO.Response>> getRegistersByStatus(@PathVariable String status) {
+        List<RegisterDTO.Response> registers = registerService.findByStatus(status).stream()
+                .map(registerMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(registers);
     }
     
     @Operation(summary = "Create register")
     @PostMapping
-    public ResponseEntity<?> createRegister(@RequestBody Register register) {
+    public ResponseEntity<?> createRegister(@RequestBody RegisterDTO.Request request) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(registerService.create(register));
+            Register register = registerMapper.toEntity(request);
+            Register created = registerService.create(register);
+            return ResponseEntity.status(HttpStatus.CREATED).body(registerMapper.toResponse(created));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -72,9 +92,11 @@ public class RegisterController {
     
     @Operation(summary = "Update register")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateRegister(@PathVariable Long id, @RequestBody Register register) {
+    public ResponseEntity<?> updateRegister(@PathVariable Long id, @RequestBody RegisterDTO.Request request) {
         try {
-            return ResponseEntity.ok(registerService.update(id, register));
+            Register register = registerMapper.toEntity(request);
+            Register updated = registerService.update(id, register);
+            return ResponseEntity.ok(registerMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -88,7 +110,8 @@ public class RegisterController {
             if (status == null) {
                 return ResponseEntity.badRequest().body("Status is required");
             }
-            return ResponseEntity.ok(registerService.updateStatus(id, status));
+            Register updated = registerService.updateStatus(id, status);
+            return ResponseEntity.ok(registerMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -1,6 +1,8 @@
 package com.pos.backend.controller;
 
 import com.pos.backend.domain.Item;
+import com.pos.backend.dto.ItemDTO;
+import com.pos.backend.mapper.ItemMapper;
 import com.pos.backend.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * REST Controller for Item operations.
@@ -32,13 +35,16 @@ import java.util.Map;
 public class ItemController {
     
     private final ItemService itemService;
+    private final ItemMapper itemMapper;
     
     @Operation(summary = "Get all items", description = "Retrieve a list of all items")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     @GetMapping
-    public ResponseEntity<List<Item>> getAllItems() {
+    public ResponseEntity<List<ItemDTO.Response>> getAllItems() {
         log.debug("GET /api/items - Get all items");
-        List<Item> items = itemService.findAll();
+        List<ItemDTO.Response> items = itemService.findAll().stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
@@ -48,10 +54,11 @@ public class ItemController {
         @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Item> getItemById(
+    public ResponseEntity<ItemDTO.Response> getItemById(
             @Parameter(description = "Item ID") @PathVariable Long id) {
         log.debug("GET /api/items/{} - Get item by id", id);
         return itemService.findById(id)
+                .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -62,10 +69,11 @@ public class ItemController {
         @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @GetMapping("/number/{number}")
-    public ResponseEntity<Item> getItemByNumber(
+    public ResponseEntity<ItemDTO.Response> getItemByNumber(
             @Parameter(description = "Item number") @PathVariable String number) {
         log.debug("GET /api/items/number/{} - Get item by number", number);
         return itemService.findByNumber(number)
+                .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -76,10 +84,11 @@ public class ItemController {
         @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @GetMapping("/barcode/{barcode}")
-    public ResponseEntity<Item> getItemByBarcode(
+    public ResponseEntity<ItemDTO.Response> getItemByBarcode(
             @Parameter(description = "Item barcode") @PathVariable String barcode) {
         log.debug("GET /api/items/barcode/{} - Get item by barcode", barcode);
         return itemService.findByBarcode(barcode)
+                .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -90,10 +99,11 @@ public class ItemController {
         @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @GetMapping("/sku/{sku}")
-    public ResponseEntity<Item> getItemBySku(
+    public ResponseEntity<ItemDTO.Response> getItemBySku(
             @Parameter(description = "Item SKU") @PathVariable String sku) {
         log.debug("GET /api/items/sku/{} - Get item by SKU", sku);
         return itemService.findBySku(sku)
+                .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -101,88 +111,106 @@ public class ItemController {
     @Operation(summary = "Search items", description = "Search items by description keyword")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved search results")
     @GetMapping("/search")
-    public ResponseEntity<List<Item>> searchItems(
+    public ResponseEntity<List<ItemDTO.Response>> searchItems(
             @Parameter(description = "Search keyword") @RequestParam String keyword) {
         log.debug("GET /api/items/search?keyword={} - Search items", keyword);
-        List<Item> results = itemService.search(keyword);
+        List<ItemDTO.Response> results = itemService.search(keyword).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(results);
     }
     
     @Operation(summary = "Get items by category", description = "Retrieve all items in a specific category")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved items")
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Item>> getItemsByCategory(
+    public ResponseEntity<List<ItemDTO.Response>> getItemsByCategory(
             @Parameter(description = "Item category") @PathVariable String category) {
         log.debug("GET /api/items/category/{} - Get items by category", category);
-        List<Item> items = itemService.findByCategory(category);
+        List<ItemDTO.Response> items = itemService.findByCategory(category).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get items by brand", description = "Retrieve all items of a specific brand")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved items")
     @GetMapping("/brand/{brand}")
-    public ResponseEntity<List<Item>> getItemsByBrand(
+    public ResponseEntity<List<ItemDTO.Response>> getItemsByBrand(
             @Parameter(description = "Item brand") @PathVariable String brand) {
         log.debug("GET /api/items/brand/{} - Get items by brand", brand);
-        List<Item> items = itemService.findByBrand(brand);
+        List<ItemDTO.Response> items = itemService.findByBrand(brand).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get items by store", description = "Retrieve all items in a specific store")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved items")
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<Item>> getItemsByStore(
+    public ResponseEntity<List<ItemDTO.Response>> getItemsByStore(
             @Parameter(description = "Store ID") @PathVariable Long storeId) {
         log.debug("GET /api/items/store/{} - Get items by store", storeId);
-        List<Item> items = itemService.findByStore(storeId);
+        List<ItemDTO.Response> items = itemService.findByStore(storeId).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get items by price range", description = "Retrieve items within a price range")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved items")
     @GetMapping("/price-range")
-    public ResponseEntity<List<Item>> getItemsByPriceRange(
+    public ResponseEntity<List<ItemDTO.Response>> getItemsByPriceRange(
             @Parameter(description = "Minimum price") @RequestParam BigDecimal minPrice,
             @Parameter(description = "Maximum price") @RequestParam BigDecimal maxPrice) {
         log.debug("GET /api/items/price-range?minPrice={}&maxPrice={} - Get items by price range", minPrice, maxPrice);
-        List<Item> items = itemService.findByPriceRange(minPrice, maxPrice);
+        List<ItemDTO.Response> items = itemService.findByPriceRange(minPrice, maxPrice).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get active items", description = "Retrieve all active items")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved active items")
     @GetMapping("/active")
-    public ResponseEntity<List<Item>> getActiveItems() {
+    public ResponseEntity<List<ItemDTO.Response>> getActiveItems() {
         log.debug("GET /api/items/active - Get active items");
-        List<Item> items = itemService.findAllActive();
+        List<ItemDTO.Response> items = itemService.findAllActive().stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get items needing reorder", description = "Retrieve items below minimum quantity")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved items")
     @GetMapping("/reorder")
-    public ResponseEntity<List<Item>> getItemsNeedingReorder() {
+    public ResponseEntity<List<ItemDTO.Response>> getItemsNeedingReorder() {
         log.debug("GET /api/items/reorder - Get items needing reorder");
-        List<Item> items = itemService.findItemsNeedingReorder();
+        List<ItemDTO.Response> items = itemService.findItemsNeedingReorder().stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get out of stock items", description = "Retrieve items with zero quantity")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved out of stock items")
     @GetMapping("/out-of-stock")
-    public ResponseEntity<List<Item>> getOutOfStockItems() {
+    public ResponseEntity<List<ItemDTO.Response>> getOutOfStockItems() {
         log.debug("GET /api/items/out-of-stock - Get out of stock items");
-        List<Item> items = itemService.findOutOfStockItems();
+        List<ItemDTO.Response> items = itemService.findOutOfStockItems().stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get low stock items", description = "Retrieve items below a quantity threshold")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved low stock items")
     @GetMapping("/low-stock")
-    public ResponseEntity<List<Item>> getLowStockItems(
+    public ResponseEntity<List<ItemDTO.Response>> getLowStockItems(
             @Parameter(description = "Quantity threshold") @RequestParam Integer threshold) {
         log.debug("GET /api/items/low-stock?threshold={} - Get low stock items", threshold);
-        List<Item> items = itemService.findLowStockItems(threshold);
+        List<ItemDTO.Response> items = itemService.findLowStockItems(threshold).stream()
+                .map(itemMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(items);
     }
     
@@ -192,11 +220,12 @@ public class ItemController {
         @ApiResponse(responseCode = "400", description = "Invalid input or duplicate item")
     })
     @PostMapping
-    public ResponseEntity<?> createItem(@RequestBody Item item) {
-        log.debug("POST /api/items - Create item: {}", item.getNumber());
+    public ResponseEntity<?> createItem(@RequestBody ItemDTO.Request request) {
+        log.debug("POST /api/items - Create item: {}", request.getNumber());
         try {
+            Item item = itemMapper.toEntity(request);
             Item created = itemService.create(item);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            return ResponseEntity.status(HttpStatus.CREATED).body(itemMapper.toResponse(created));
         } catch (IllegalArgumentException e) {
             log.error("Error creating item: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -212,11 +241,12 @@ public class ItemController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateItem(
             @Parameter(description = "Item ID") @PathVariable Long id,
-            @RequestBody Item item) {
+            @RequestBody ItemDTO.Request request) {
         log.debug("PUT /api/items/{} - Update item", id);
         try {
+            Item item = itemMapper.toEntity(request);
             Item updated = itemService.update(id, item);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(itemMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             log.error("Error updating item: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -240,7 +270,7 @@ public class ItemController {
                 return ResponseEntity.badRequest().body("Quantity is required");
             }
             Item updated = itemService.updateQuantity(id, quantity);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(itemMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             log.error("Error updating item quantity: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -264,7 +294,7 @@ public class ItemController {
                 return ResponseEntity.badRequest().body("Adjustment is required");
             }
             Item updated = itemService.adjustQuantity(id, adjustment);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(itemMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             log.error("Error adjusting item quantity: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -300,7 +330,7 @@ public class ItemController {
         log.debug("PATCH /api/items/{}/deactivate - Deactivate item", id);
         try {
             Item deactivated = itemService.deactivate(id);
-            return ResponseEntity.ok(deactivated);
+            return ResponseEntity.ok(itemMapper.toResponse(deactivated));
         } catch (IllegalArgumentException e) {
             log.error("Error deactivating item: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());

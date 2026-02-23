@@ -1,6 +1,8 @@
 package com.pos.backend.controller;
 
 import com.pos.backend.domain.TaxCategory;
+import com.pos.backend.dto.TaxCategoryDTO;
+import com.pos.backend.mapper.TaxCategoryMapper;
 import com.pos.backend.service.TaxCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST Controller for TaxCategory operations.
@@ -30,13 +33,16 @@ import java.util.List;
 public class TaxCategoryController {
     
     private final TaxCategoryService taxCategoryService;
+    private final TaxCategoryMapper taxCategoryMapper;
     
     @Operation(summary = "Get all tax categories", description = "Retrieve a list of all tax categories")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     @GetMapping
-    public ResponseEntity<List<TaxCategory>> getAllTaxCategories() {
+    public ResponseEntity<List<TaxCategoryDTO.Response>> getAllTaxCategories() {
         log.debug("GET /api/tax-categories - Get all tax categories");
-        List<TaxCategory> taxCategories = taxCategoryService.findAll();
+        List<TaxCategoryDTO.Response> taxCategories = taxCategoryService.findAll().stream()
+                .map(taxCategoryMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(taxCategories);
     }
     
@@ -46,10 +52,11 @@ public class TaxCategoryController {
         @ApiResponse(responseCode = "404", description = "Tax category not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<TaxCategory> getTaxCategoryById(
+    public ResponseEntity<TaxCategoryDTO.Response> getTaxCategoryById(
             @Parameter(description = "Tax category ID") @PathVariable Long id) {
         log.debug("GET /api/tax-categories/{} - Get tax category by id", id);
         return taxCategoryService.findById(id)
+                .map(taxCategoryMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -60,10 +67,11 @@ public class TaxCategoryController {
         @ApiResponse(responseCode = "404", description = "Tax category not found")
     })
     @GetMapping("/category/{category}")
-    public ResponseEntity<TaxCategory> getTaxCategoryByName(
+    public ResponseEntity<TaxCategoryDTO.Response> getTaxCategoryByName(
             @Parameter(description = "Category name") @PathVariable String category) {
         log.debug("GET /api/tax-categories/category/{} - Get tax category by name", category);
         return taxCategoryService.findByCategory(category)
+                .map(taxCategoryMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -71,19 +79,23 @@ public class TaxCategoryController {
     @Operation(summary = "Search tax categories", description = "Search tax categories by keyword")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved search results")
     @GetMapping("/search")
-    public ResponseEntity<List<TaxCategory>> searchTaxCategories(
+    public ResponseEntity<List<TaxCategoryDTO.Response>> searchTaxCategories(
             @Parameter(description = "Search keyword") @RequestParam String keyword) {
         log.debug("GET /api/tax-categories/search?keyword={} - Search tax categories", keyword);
-        List<TaxCategory> results = taxCategoryService.search(keyword);
+        List<TaxCategoryDTO.Response> results = taxCategoryService.search(keyword).stream()
+                .map(taxCategoryMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(results);
     }
     
     @Operation(summary = "Get active tax categories", description = "Retrieve all active tax categories")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved active tax categories")
     @GetMapping("/active")
-    public ResponseEntity<List<TaxCategory>> getActiveTaxCategories() {
+    public ResponseEntity<List<TaxCategoryDTO.Response>> getActiveTaxCategories() {
         log.debug("GET /api/tax-categories/active - Get active tax categories");
-        List<TaxCategory> taxCategories = taxCategoryService.findAllActive();
+        List<TaxCategoryDTO.Response> taxCategories = taxCategoryService.findAllActive().stream()
+                .map(taxCategoryMapper::toResponse)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(taxCategories);
     }
     
@@ -93,11 +105,12 @@ public class TaxCategoryController {
         @ApiResponse(responseCode = "400", description = "Invalid input or duplicate category")
     })
     @PostMapping
-    public ResponseEntity<?> createTaxCategory(@RequestBody TaxCategory taxCategory) {
-        log.debug("POST /api/tax-categories - Create tax category: {}", taxCategory.getCategory());
+    public ResponseEntity<?> createTaxCategory(@RequestBody TaxCategoryDTO.Request request) {
+        log.debug("POST /api/tax-categories - Create tax category: {}", request.getCategory());
         try {
+            TaxCategory taxCategory = taxCategoryMapper.toEntity(request);
             TaxCategory created = taxCategoryService.create(taxCategory);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            return ResponseEntity.status(HttpStatus.CREATED).body(taxCategoryMapper.toResponse(created));
         } catch (IllegalArgumentException e) {
             log.error("Error creating tax category: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -113,11 +126,12 @@ public class TaxCategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTaxCategory(
             @Parameter(description = "Tax category ID") @PathVariable Long id,
-            @RequestBody TaxCategory taxCategory) {
+            @RequestBody TaxCategoryDTO.Request request) {
         log.debug("PUT /api/tax-categories/{} - Update tax category", id);
         try {
+            TaxCategory taxCategory = taxCategoryMapper.toEntity(request);
             TaxCategory updated = taxCategoryService.update(id, taxCategory);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(taxCategoryMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             log.error("Error updating tax category: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -153,7 +167,7 @@ public class TaxCategoryController {
         log.debug("PATCH /api/tax-categories/{}/deactivate - Deactivate tax category", id);
         try {
             TaxCategory deactivated = taxCategoryService.deactivate(id);
-            return ResponseEntity.ok(deactivated);
+            return ResponseEntity.ok(taxCategoryMapper.toResponse(deactivated));
         } catch (IllegalArgumentException e) {
             log.error("Error deactivating tax category: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());

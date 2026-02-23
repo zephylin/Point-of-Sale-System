@@ -1,6 +1,8 @@
 package com.pos.backend.controller;
 
 import com.pos.backend.domain.SaleLineItem;
+import com.pos.backend.dto.SaleLineItemDTO;
+import com.pos.backend.mapper.SaleLineItemMapper;
 import com.pos.backend.service.SaleLineItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sale-line-items")
@@ -18,31 +21,42 @@ import java.util.List;
 public class SaleLineItemController {
     
     private final SaleLineItemService saleLineItemService;
+    private final SaleLineItemMapper saleLineItemMapper;
     
     @Operation(summary = "Get all sale line items")
     @GetMapping
-    public ResponseEntity<List<SaleLineItem>> getAllSaleLineItems() {
-        return ResponseEntity.ok(saleLineItemService.findAll());
+    public ResponseEntity<List<SaleLineItemDTO.Response>> getAllSaleLineItems() {
+        List<SaleLineItemDTO.Response> items = saleLineItemService.findAll().stream()
+                .map(saleLineItemMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get sale line item by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<SaleLineItem> getSaleLineItemById(@PathVariable Long id) {
+    public ResponseEntity<SaleLineItemDTO.Response> getSaleLineItemById(@PathVariable Long id) {
         return saleLineItemService.findById(id)
+                .map(saleLineItemMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @Operation(summary = "Get sale line items by sale")
     @GetMapping("/sale/{saleId}")
-    public ResponseEntity<List<SaleLineItem>> getSaleLineItemsBySale(@PathVariable Long saleId) {
-        return ResponseEntity.ok(saleLineItemService.findBySale(saleId));
+    public ResponseEntity<List<SaleLineItemDTO.Response>> getSaleLineItemsBySale(@PathVariable Long saleId) {
+        List<SaleLineItemDTO.Response> items = saleLineItemService.findBySale(saleId).stream()
+                .map(saleLineItemMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get sale line items by item")
     @GetMapping("/item/{itemId}")
-    public ResponseEntity<List<SaleLineItem>> getSaleLineItemsByItem(@PathVariable Long itemId) {
-        return ResponseEntity.ok(saleLineItemService.findByItem(itemId));
+    public ResponseEntity<List<SaleLineItemDTO.Response>> getSaleLineItemsByItem(@PathVariable Long itemId) {
+        List<SaleLineItemDTO.Response> items = saleLineItemService.findByItem(itemId).stream()
+                .map(saleLineItemMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(items);
     }
     
     @Operation(summary = "Get total quantity sold for item")
@@ -53,9 +67,11 @@ public class SaleLineItemController {
     
     @Operation(summary = "Create sale line item")
     @PostMapping
-    public ResponseEntity<?> createSaleLineItem(@RequestBody SaleLineItem saleLineItem) {
+    public ResponseEntity<?> createSaleLineItem(@RequestBody SaleLineItemDTO.Request request) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(saleLineItemService.create(saleLineItem));
+            SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
+            SaleLineItem created = saleLineItemService.create(lineItem);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saleLineItemMapper.toResponse(created));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -63,9 +79,11 @@ public class SaleLineItemController {
     
     @Operation(summary = "Update sale line item")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSaleLineItem(@PathVariable Long id, @RequestBody SaleLineItem saleLineItem) {
+    public ResponseEntity<?> updateSaleLineItem(@PathVariable Long id, @RequestBody SaleLineItemDTO.Request request) {
         try {
-            return ResponseEntity.ok(saleLineItemService.update(id, saleLineItem));
+            SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
+            SaleLineItem updated = saleLineItemService.update(id, lineItem);
+            return ResponseEntity.ok(saleLineItemMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

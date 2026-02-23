@@ -1,6 +1,8 @@
 package com.pos.backend.controller;
 
 import com.pos.backend.domain.Session;
+import com.pos.backend.dto.SessionDTO;
+import com.pos.backend.mapper.SessionMapper;
 import com.pos.backend.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sessions")
@@ -21,70 +24,91 @@ import java.util.Map;
 public class SessionController {
     
     private final SessionService sessionService;
+    private final SessionMapper sessionMapper;
     
     @Operation(summary = "Get all sessions")
     @GetMapping
-    public ResponseEntity<List<Session>> getAllSessions() {
-        return ResponseEntity.ok(sessionService.findAll());
+    public ResponseEntity<List<SessionDTO.Response>> getAllSessions() {
+        List<SessionDTO.Response> sessions = sessionService.findAll().stream()
+                .map(sessionMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(sessions);
     }
     
     @Operation(summary = "Get session by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Session> getSessionById(@PathVariable Long id) {
+    public ResponseEntity<SessionDTO.Response> getSessionById(@PathVariable Long id) {
         return sessionService.findById(id)
+                .map(sessionMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @Operation(summary = "Get sessions by cashier")
     @GetMapping("/cashier/{cashierId}")
-    public ResponseEntity<List<Session>> getSessionsByCashier(@PathVariable Long cashierId) {
-        return ResponseEntity.ok(sessionService.findByCashier(cashierId));
+    public ResponseEntity<List<SessionDTO.Response>> getSessionsByCashier(@PathVariable Long cashierId) {
+        List<SessionDTO.Response> sessions = sessionService.findByCashier(cashierId).stream()
+                .map(sessionMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(sessions);
     }
     
     @Operation(summary = "Get sessions by register")
     @GetMapping("/register/{registerId}")
-    public ResponseEntity<List<Session>> getSessionsByRegister(@PathVariable Long registerId) {
-        return ResponseEntity.ok(sessionService.findByRegister(registerId));
+    public ResponseEntity<List<SessionDTO.Response>> getSessionsByRegister(@PathVariable Long registerId) {
+        List<SessionDTO.Response> sessions = sessionService.findByRegister(registerId).stream()
+                .map(sessionMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(sessions);
     }
     
     @Operation(summary = "Get sessions by status")
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Session>> getSessionsByStatus(@PathVariable String status) {
-        return ResponseEntity.ok(sessionService.findByStatus(status));
+    public ResponseEntity<List<SessionDTO.Response>> getSessionsByStatus(@PathVariable String status) {
+        List<SessionDTO.Response> sessions = sessionService.findByStatus(status).stream()
+                .map(sessionMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(sessions);
     }
     
     @Operation(summary = "Get active session for cashier")
     @GetMapping("/cashier/{cashierId}/active")
-    public ResponseEntity<Session> getActiveSessionForCashier(@PathVariable Long cashierId) {
+    public ResponseEntity<SessionDTO.Response> getActiveSessionForCashier(@PathVariable Long cashierId) {
         return sessionService.findActiveSessionForCashier(cashierId)
+                .map(sessionMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @Operation(summary = "Get active session for register")
     @GetMapping("/register/{registerId}/active")
-    public ResponseEntity<Session> getActiveSessionForRegister(@PathVariable Long registerId) {
+    public ResponseEntity<SessionDTO.Response> getActiveSessionForRegister(@PathVariable Long registerId) {
         return sessionService.findActiveSessionForRegister(registerId)
+                .map(sessionMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
     
     @Operation(summary = "Get sessions by date range")
     @GetMapping("/date-range")
-    public ResponseEntity<List<Session>> getSessionsByDateRange(
+    public ResponseEntity<List<SessionDTO.Response>> getSessionsByDateRange(
             @RequestParam String startDate,
             @RequestParam String endDate) {
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);
-        return ResponseEntity.ok(sessionService.findByDateRange(start, end));
+        List<SessionDTO.Response> sessions = sessionService.findByDateRange(start, end).stream()
+                .map(sessionMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(sessions);
     }
     
     @Operation(summary = "Create session")
     @PostMapping
-    public ResponseEntity<?> createSession(@RequestBody Session session) {
+    public ResponseEntity<?> createSession(@RequestBody SessionDTO.Request request) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(sessionService.create(session));
+            Session session = sessionMapper.toEntity(request);
+            Session created = sessionService.create(session);
+            return ResponseEntity.status(HttpStatus.CREATED).body(sessionMapper.toResponse(created));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -92,9 +116,11 @@ public class SessionController {
     
     @Operation(summary = "Update session")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSession(@PathVariable Long id, @RequestBody Session session) {
+    public ResponseEntity<?> updateSession(@PathVariable Long id, @RequestBody SessionDTO.Request request) {
         try {
-            return ResponseEntity.ok(sessionService.update(id, session));
+            Session session = sessionMapper.toEntity(request);
+            Session updated = sessionService.update(id, session);
+            return ResponseEntity.ok(sessionMapper.toResponse(updated));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -105,7 +131,8 @@ public class SessionController {
     public ResponseEntity<?> closeSession(@PathVariable Long id, @RequestBody Map<String, String> request) {
         try {
             BigDecimal endingCash = new BigDecimal(request.get("endingCash"));
-            return ResponseEntity.ok(sessionService.closeSession(id, endingCash));
+            Session closed = sessionService.closeSession(id, endingCash);
+            return ResponseEntity.ok(sessionMapper.toResponse(closed));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
