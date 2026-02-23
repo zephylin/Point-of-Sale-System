@@ -72,7 +72,6 @@ import java.util.stream.Collectors;
  */
 @RestController                                    // Marks this as REST API controller
 @RequestMapping("/api/persons")                   // Base URL: /api/persons
-@CrossOrigin(origins = "http://localhost:3000")   // Allow React frontend to call this
 @RequiredArgsConstructor                          // Lombok: Constructor injection
 @Slf4j                                            // Lombok: Logger
 @Tag(name = "Person Management", description = "APIs for managing persons in the POS system")  // Swagger documentation
