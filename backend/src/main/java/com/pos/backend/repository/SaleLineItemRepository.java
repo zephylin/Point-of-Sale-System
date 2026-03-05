@@ -11,20 +11,20 @@ import java.util.List;
 @Repository
 public interface SaleLineItemRepository extends JpaRepository<SaleLineItem, Long> {
     
-    List<SaleLineItem> findBySaleId(Long saleId);
+    List<SaleLineItem> findBySale_Id(Long saleId);
     
-    List<SaleLineItem> findByItemId(Long itemId);
+    List<SaleLineItem> findByItem_Id(Long itemId);
     
-    @Query("SELECT sli FROM SaleLineItem sli WHERE sli.saleId IN :saleIds")
+    @Query("SELECT sli FROM SaleLineItem sli WHERE sli.sale.id IN :saleIds")
     List<SaleLineItem> findBySaleIds(@Param("saleIds") List<Long> saleIds);
     
-    @Query("SELECT SUM(sli.quantity) FROM SaleLineItem sli WHERE sli.itemId = :itemId")
+    @Query("SELECT SUM(sli.quantity) FROM SaleLineItem sli WHERE sli.item.id = :itemId")
     Integer getTotalQuantitySoldForItem(@Param("itemId") Long itemId);
     
-    @Query("SELECT sli.itemId, SUM(sli.quantity) FROM SaleLineItem sli GROUP BY sli.itemId ORDER BY SUM(sli.quantity) DESC")
+    @Query("SELECT sli.item.id, SUM(sli.quantity) FROM SaleLineItem sli GROUP BY sli.item.id ORDER BY SUM(sli.quantity) DESC")
     List<Object[]> getTopSellingItems();
     
-    long countBySaleId(Long saleId);
+    long countBySale_Id(Long saleId);
     
-    long countByItemId(Long itemId);
+    long countByItem_Id(Long itemId);
 }

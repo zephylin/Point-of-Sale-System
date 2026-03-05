@@ -1,7 +1,11 @@
 package com.pos.backend.service;
 
+import com.pos.backend.domain.Item;
+import com.pos.backend.domain.Sale;
 import com.pos.backend.domain.SaleLineItem;
+import com.pos.backend.repository.ItemRepository;
 import com.pos.backend.repository.SaleLineItemRepository;
+import com.pos.backend.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,8 @@ import java.util.Optional;
 public class SaleLineItemService {
     
     private final SaleLineItemRepository saleLineItemRepository;
+    private final SaleRepository saleRepository;
+    private final ItemRepository itemRepository;
     
     @Transactional(readOnly = true)
     public List<SaleLineItem> findAll() {
@@ -31,12 +37,12 @@ public class SaleLineItemService {
     
     @Transactional(readOnly = true)
     public List<SaleLineItem> findBySale(Long saleId) {
-        return saleLineItemRepository.findBySaleId(saleId);
+        return saleLineItemRepository.findBySale_Id(saleId);
     }
     
     @Transactional(readOnly = true)
     public List<SaleLineItem> findByItem(Long itemId) {
-        return saleLineItemRepository.findByItemId(itemId);
+        return saleLineItemRepository.findByItem_Id(itemId);
     }
     
     @Transactional(readOnly = true)
@@ -67,14 +73,22 @@ public class SaleLineItemService {
         
         return saleLineItemRepository.save(saleLineItem);
     }
+
+    /**
+     * Create a sale line item, resolving sale and item from IDs
+     */
+    public SaleLineItem createWithIds(SaleLineItem saleLineItem, Long saleId, Long itemId) {
+        resolveRelationships(saleLineItem, saleId, itemId);
+        return create(saleLineItem);
+    }
     
     public SaleLineItem update(Long id, SaleLineItem saleLineItem) {
         SaleLineItem existing = saleLineItemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Sale line item not found with id: " + id));
         validateSaleLineItem(saleLineItem);
         
-        existing.setSaleId(saleLineItem.getSaleId());
-        existing.setItemId(saleLineItem.getItemId());
+        existing.setSale(saleLineItem.getSale());
+        existing.setItem(saleLineItem.getItem());
         existing.setQuantity(saleLineItem.getQuantity());
         existing.setUnitPrice(saleLineItem.getUnitPrice());
         
@@ -97,6 +111,14 @@ public class SaleLineItemService {
         
         return saleLineItemRepository.save(existing);
     }
+
+    /**
+     * Update a sale line item, resolving sale and item from IDs
+     */
+    public SaleLineItem updateWithIds(Long id, SaleLineItem saleLineItem, Long saleId, Long itemId) {
+        resolveRelationships(saleLineItem, saleId, itemId);
+        return update(id, saleLineItem);
+    }
     
     public void delete(Long id) {
         if (!saleLineItemRepository.existsById(id)) {
@@ -109,16 +131,29 @@ public class SaleLineItemService {
     public long count() {
         return saleLineItemRepository.count();
     }
+
+    private void resolveRelationships(SaleLineItem saleLineItem, Long saleId, Long itemId) {
+        if (saleId != null) {
+            Sale sale = saleRepository.findById(saleId)
+                    .orElseThrow(() -> new IllegalArgumentException("Sale not found with id: " + saleId));
+            saleLineItem.setSale(sale);
+        }
+        if (itemId != null) {
+            Item item = itemRepository.findById(itemId)
+                    .orElseThrow(() -> new IllegalArgumentException("Item not found with id: " + itemId));
+            saleLineItem.setItem(item);
+        }
+    }
     
     private void validateSaleLineItem(SaleLineItem saleLineItem) {
         if (saleLineItem == null) {
             throw new IllegalArgumentException("Sale line item cannot be null");
         }
-        if (saleLineItem.getSaleId() == null) {
-            throw new IllegalArgumentException("Sale ID is required");
+        if (saleLineItem.getSale() == null) {
+            throw new IllegalArgumentException("Sale is required");
         }
-        if (saleLineItem.getItemId() == null) {
-            throw new IllegalArgumentException("Item ID is required");
+        if (saleLineItem.getItem() == null) {
+            throw new IllegalArgumentException("Item is required");
         }
         if (saleLineItem.getQuantity() == null || saleLineItem.getQuantity() <= 0) {
             throw new IllegalArgumentException("Quantity must be greater than zero");

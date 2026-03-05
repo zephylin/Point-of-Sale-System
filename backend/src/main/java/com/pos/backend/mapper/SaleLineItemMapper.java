@@ -12,8 +12,7 @@ public class SaleLineItemMapper {
 
     public SaleLineItem toEntity(SaleLineItemDTO.Request request) {
         SaleLineItem lineItem = new SaleLineItem();
-        lineItem.setSaleId(request.getSaleId());
-        lineItem.setItemId(request.getItemId());
+        // sale and item are set by the service layer
         lineItem.setQuantity(request.getQuantity());
         lineItem.setUnitPrice(request.getUnitPrice());
         lineItem.setDiscount(request.getDiscount());
@@ -24,8 +23,9 @@ public class SaleLineItemMapper {
     public SaleLineItemDTO.Response toResponse(SaleLineItem lineItem) {
         return SaleLineItemDTO.Response.builder()
                 .id(lineItem.getId())
-                .saleId(lineItem.getSaleId())
-                .itemId(lineItem.getItemId())
+                .saleId(lineItem.getSale() != null ? lineItem.getSale().getId() : null)
+                .itemId(lineItem.getItem() != null ? lineItem.getItem().getId() : null)
+                .itemDescription(lineItem.getItem() != null ? lineItem.getItem().getDescription() : null)
                 .quantity(lineItem.getQuantity())
                 .unitPrice(lineItem.getUnitPrice())
                 .extendedPrice(lineItem.getExtendedPrice())
@@ -38,8 +38,7 @@ public class SaleLineItemMapper {
     }
 
     public void updateEntity(SaleLineItem lineItem, SaleLineItemDTO.Request request) {
-        lineItem.setSaleId(request.getSaleId());
-        lineItem.setItemId(request.getItemId());
+        // sale and item are set by the service layer
         lineItem.setQuantity(request.getQuantity());
         lineItem.setUnitPrice(request.getUnitPrice());
         lineItem.setDiscount(request.getDiscount());

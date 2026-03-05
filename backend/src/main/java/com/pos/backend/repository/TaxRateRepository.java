@@ -13,17 +13,17 @@ import java.util.Optional;
 @Repository
 public interface TaxRateRepository extends JpaRepository<TaxRate, Long> {
     
-    List<TaxRate> findByTaxCategoryId(Long taxCategoryId);
+    List<TaxRate> findByTaxCategory_Id(Long taxCategoryId);
     
     List<TaxRate> findByIsActive(Boolean isActive);
     
-    List<TaxRate> findByTaxCategoryIdAndIsActive(Long taxCategoryId, Boolean isActive);
+    List<TaxRate> findByTaxCategory_IdAndIsActive(Long taxCategoryId, Boolean isActive);
     
-    @Query("SELECT t FROM TaxRate t WHERE t.taxCategoryId = :taxCategoryId AND t.effectiveDate <= :date AND t.isActive = true ORDER BY t.effectiveDate DESC")
+    @Query("SELECT t FROM TaxRate t WHERE t.taxCategory.id = :taxCategoryId AND t.effectiveDate <= :date AND t.isActive = true ORDER BY t.effectiveDate DESC")
     List<TaxRate> findEffectiveRatesForDate(@Param("taxCategoryId") Long taxCategoryId, @Param("date") LocalDate date);
     
-    Optional<TaxRate> findTopByTaxCategoryIdAndEffectiveDateLessThanEqualAndIsActiveTrueOrderByEffectiveDateDesc(
+    Optional<TaxRate> findTopByTaxCategory_IdAndEffectiveDateLessThanEqualAndIsActiveTrueOrderByEffectiveDateDesc(
             Long taxCategoryId, LocalDate date);
     
-    long countByTaxCategoryId(Long taxCategoryId);
+    long countByTaxCategory_Id(Long taxCategoryId);
 }

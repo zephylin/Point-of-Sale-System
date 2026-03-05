@@ -14,7 +14,7 @@ public class TaxRateMapper {
         TaxRate taxRate = new TaxRate();
         taxRate.setRate(request.getRate());
         taxRate.setEffectiveDate(request.getEffectiveDate());
-        taxRate.setTaxCategoryId(request.getTaxCategoryId());
+        // taxCategory is set by the service layer
         taxRate.setDescription(request.getDescription());
         return taxRate;
     }
@@ -24,7 +24,8 @@ public class TaxRateMapper {
                 .id(taxRate.getId())
                 .rate(taxRate.getRate())
                 .effectiveDate(taxRate.getEffectiveDate())
-                .taxCategoryId(taxRate.getTaxCategoryId())
+                .taxCategoryId(taxRate.getTaxCategory() != null ? taxRate.getTaxCategory().getId() : null)
+                .taxCategoryName(taxRate.getTaxCategory() != null ? taxRate.getTaxCategory().getCategory() : null)
                 .description(taxRate.getDescription())
                 .isActive(taxRate.getIsActive())
                 .build();
@@ -33,7 +34,7 @@ public class TaxRateMapper {
     public void updateEntity(TaxRate taxRate, TaxRateDTO.Request request) {
         taxRate.setRate(request.getRate());
         taxRate.setEffectiveDate(request.getEffectiveDate());
-        taxRate.setTaxCategoryId(request.getTaxCategoryId());
+        // taxCategory is set by the service layer
         taxRate.setDescription(request.getDescription());
     }
 }

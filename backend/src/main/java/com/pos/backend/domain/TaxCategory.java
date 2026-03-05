@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entity representing a tax category for items.
@@ -40,6 +44,20 @@ public class TaxCategory {
      */
     @Column(nullable = false)
     private Boolean isActive = true;
+
+    /**
+     * Tax rates belonging to this category
+     */
+    @OneToMany(mappedBy = "taxCategory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<TaxRate> taxRates = new ArrayList<>();
+
+    /**
+     * Items in this tax category
+     */
+    @OneToMany(mappedBy = "taxCategory", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Item> items = new ArrayList<>();
     
     /**
      * Constructor with category name

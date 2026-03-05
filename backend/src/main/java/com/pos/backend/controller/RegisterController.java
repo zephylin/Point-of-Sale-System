@@ -83,7 +83,7 @@ public class RegisterController {
     @PostMapping
     public ResponseEntity<?> createRegister(@Valid @RequestBody RegisterDTO.Request request) {
         Register register = registerMapper.toEntity(request);
-        Register created = registerService.create(register);
+        Register created = registerService.createWithIds(register, request.getStoreId());
         return ResponseEntity.status(HttpStatus.CREATED).body(registerMapper.toResponse(created));
     }
     
@@ -91,7 +91,7 @@ public class RegisterController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRegister(@PathVariable Long id, @Valid @RequestBody RegisterDTO.Request request) {
         Register register = registerMapper.toEntity(request);
-        Register updated = registerService.update(id, register);
+        Register updated = registerService.updateWithIds(id, register, request.getStoreId());
         return ResponseEntity.ok(registerMapper.toResponse(updated));
     }
     

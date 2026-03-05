@@ -49,7 +49,9 @@ public class SaleDTO {
         private Long id;
         private Long sessionId;
         private Long storeId;
+        private String storeName;
         private Long cashierId;
+        private String cashierName;
         private LocalDateTime dateTime;
         private BigDecimal subtotal;
         private BigDecimal tax;

@@ -56,6 +56,7 @@ public class SaleLineItemDTO {
         private Long id;
         private Long saleId;
         private Long itemId;
+        private String itemDescription;
         private Integer quantity;
         private BigDecimal unitPrice;
         private BigDecimal extendedPrice;

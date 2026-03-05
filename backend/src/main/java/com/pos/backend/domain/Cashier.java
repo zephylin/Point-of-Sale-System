@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -38,16 +39,20 @@ public class Cashier {
     private String password;
     
     /**
-     * Person ID reference
+     * Person associated with this cashier
      */
-    @Column(name = "person_id")
-    private Long personId;
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id")
+    @ToString.Exclude
+    private Person person;
+
     /**
-     * Store ID where cashier works
+     * Store where cashier works
      */
-    @Column(name = "store_id")
-    private Long storeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    @ToString.Exclude
+    private Store store;
     
     /**
      * Active status
@@ -87,15 +92,15 @@ public class Cashier {
     }
     
     /**
-     * Constructor with number, password, and person ID
+     * Constructor with number, password, and person
      * @param number Cashier number
      * @param password Cashier password
-     * @param personId Person ID
+     * @param person Person entity
      */
-    public Cashier(String number, String password, Long personId) {
+    public Cashier(String number, String password, Person person) {
         this.number = number;
         this.password = password;
-        this.personId = personId;
+        this.person = person;
         this.isActive = true;
         this.hireDate = LocalDateTime.now();
         this.role = "Cashier";

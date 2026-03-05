@@ -19,8 +19,7 @@ public class ItemMapper {
         item.setQuantity(request.getQuantity());
         item.setMinQuantity(request.getMinQuantity());
         item.setMaxQuantity(request.getMaxQuantity());
-        item.setTaxCategoryId(request.getTaxCategoryId());
-        item.setStoreId(request.getStoreId());
+        // taxCategory and store are set by the service layer
         item.setBarcode(request.getBarcode());
         item.setSku(request.getSku());
         item.setBrand(request.getBrand());
@@ -39,8 +38,10 @@ public class ItemMapper {
                 .quantity(item.getQuantity())
                 .minQuantity(item.getMinQuantity())
                 .maxQuantity(item.getMaxQuantity())
-                .taxCategoryId(item.getTaxCategoryId())
-                .storeId(item.getStoreId())
+                .taxCategoryId(item.getTaxCategory() != null ? item.getTaxCategory().getId() : null)
+                .taxCategoryName(item.getTaxCategory() != null ? item.getTaxCategory().getCategory() : null)
+                .storeId(item.getStore() != null ? item.getStore().getId() : null)
+                .storeName(item.getStore() != null ? item.getStore().getName() : null)
                 .barcode(item.getBarcode())
                 .sku(item.getSku())
                 .brand(item.getBrand())
@@ -60,8 +61,7 @@ public class ItemMapper {
         item.setQuantity(request.getQuantity());
         item.setMinQuantity(request.getMinQuantity());
         item.setMaxQuantity(request.getMaxQuantity());
-        item.setTaxCategoryId(request.getTaxCategoryId());
-        item.setStoreId(request.getStoreId());
+        // taxCategory and store are set by the service layer
         item.setBarcode(request.getBarcode());
         item.setSku(request.getSku());
         item.setBrand(request.getBrand());

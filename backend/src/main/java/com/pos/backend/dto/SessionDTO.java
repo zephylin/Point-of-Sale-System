@@ -47,7 +47,9 @@ public class SessionDTO {
     public static class Response {
         private Long id;
         private Long cashierId;
+        private String cashierName;
         private Long registerId;
+        private String registerNumber;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
         private BigDecimal startingCash;

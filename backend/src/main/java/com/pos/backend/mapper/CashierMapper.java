@@ -15,8 +15,7 @@ public class CashierMapper {
         Cashier cashier = new Cashier();
         cashier.setNumber(request.getNumber());
         cashier.setPassword(request.getPassword());
-        cashier.setPersonId(request.getPersonId());
-        cashier.setStoreId(request.getStoreId());
+        // person and store are set by the service layer
         cashier.setRole(request.getRole() != null ? request.getRole() : "Cashier");
         return cashier;
     }
@@ -25,8 +24,10 @@ public class CashierMapper {
         return CashierDTO.Response.builder()
                 .id(cashier.getId())
                 .number(cashier.getNumber())
-                .personId(cashier.getPersonId())
-                .storeId(cashier.getStoreId())
+                .personId(cashier.getPerson() != null ? cashier.getPerson().getId() : null)
+                .personName(cashier.getPerson() != null ? cashier.getPerson().getFullName() : null)
+                .storeId(cashier.getStore() != null ? cashier.getStore().getId() : null)
+                .storeName(cashier.getStore() != null ? cashier.getStore().getName() : null)
                 .isActive(cashier.getIsActive())
                 .hireDate(cashier.getHireDate())
                 .terminationDate(cashier.getTerminationDate())
@@ -40,8 +41,7 @@ public class CashierMapper {
         if (request.getPassword() != null) {
             cashier.setPassword(request.getPassword());
         }
-        cashier.setPersonId(request.getPersonId());
-        cashier.setStoreId(request.getStoreId());
+        // person and store are set by the service layer
         if (request.getRole() != null) {
             cashier.setRole(request.getRole());
         }

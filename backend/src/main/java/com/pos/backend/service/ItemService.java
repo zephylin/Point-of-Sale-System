@@ -1,7 +1,11 @@
 package com.pos.backend.service;
 
 import com.pos.backend.domain.Item;
+import com.pos.backend.domain.Store;
+import com.pos.backend.domain.TaxCategory;
 import com.pos.backend.repository.ItemRepository;
+import com.pos.backend.repository.StoreRepository;
+import com.pos.backend.repository.TaxCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,8 @@ import java.util.Optional;
 public class ItemService {
     
     private final ItemRepository itemRepository;
+    private final StoreRepository storeRepository;
+    private final TaxCategoryRepository taxCategoryRepository;
     
     /**
      * Get all items
@@ -122,7 +128,7 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<Item> findByStore(Long storeId) {
         log.debug("Finding items by store: {}", storeId);
-        return itemRepository.findByStoreId(storeId);
+        return itemRepository.findByStore_Id(storeId);
     }
     
     /**
@@ -219,6 +225,18 @@ public class ItemService {
         log.info("Created item with id: {}", saved.getId());
         return saved;
     }
+
+    /**
+     * Create a new item, resolving store and tax category from IDs
+     * @param item Item to create
+     * @param storeId Store ID (optional)
+     * @param taxCategoryId Tax category ID (optional)
+     * @return Created item
+     */
+    public Item createWithIds(Item item, Long storeId, Long taxCategoryId) {
+        resolveRelationships(item, storeId, taxCategoryId);
+        return create(item);
+    }
     
     /**
      * Update an existing item
@@ -258,8 +276,8 @@ public class ItemService {
         existing.setQuantity(item.getQuantity());
         existing.setMinQuantity(item.getMinQuantity());
         existing.setMaxQuantity(item.getMaxQuantity());
-        existing.setTaxCategoryId(item.getTaxCategoryId());
-        existing.setStoreId(item.getStoreId());
+        existing.setTaxCategory(item.getTaxCategory());
+        existing.setStore(item.getStore());
         existing.setBarcode(item.getBarcode());
         existing.setSku(item.getSku());
         existing.setBrand(item.getBrand());
@@ -379,13 +397,42 @@ public class ItemService {
     }
     
     /**
+     * Update an existing item, resolving store and tax category from IDs
+     * @param id Item ID
+     * @param item Updated item data
+     * @param storeId Store ID (optional)
+     * @param taxCategoryId Tax category ID (optional)
+     * @return Updated item
+     */
+    public Item updateWithIds(Long id, Item item, Long storeId, Long taxCategoryId) {
+        resolveRelationships(item, storeId, taxCategoryId);
+        return update(id, item);
+    }
+
+    /**
+     * Resolve store and tax category relationships from IDs
+     */
+    private void resolveRelationships(Item item, Long storeId, Long taxCategoryId) {
+        if (storeId != null) {
+            Store store = storeRepository.findById(storeId)
+                    .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+            item.setStore(store);
+        }
+        if (taxCategoryId != null) {
+            TaxCategory taxCategory = taxCategoryRepository.findById(taxCategoryId)
+                    .orElseThrow(() -> new IllegalArgumentException("Tax category not found with id: " + taxCategoryId));
+            item.setTaxCategory(taxCategory);
+        }
+    }
+
+    /**
      * Count items by store
      * @param storeId Store ID
      * @return Count of items in the store
      */
     @Transactional(readOnly = true)
     public long countByStore(Long storeId) {
-        return itemRepository.countByStoreId(storeId);
+        return itemRepository.countByStore_Id(storeId);
     }
     
     /**

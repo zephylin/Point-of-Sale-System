@@ -1,7 +1,11 @@
 package com.pos.backend.service;
 
 import com.pos.backend.domain.Cashier;
+import com.pos.backend.domain.Person;
+import com.pos.backend.domain.Store;
 import com.pos.backend.repository.CashierRepository;
+import com.pos.backend.repository.PersonRepository;
+import com.pos.backend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,8 @@ import java.util.Optional;
 public class CashierService {
     
     private final CashierRepository cashierRepository;
+    private final PersonRepository personRepository;
+    private final StoreRepository storeRepository;
     
     @Transactional(readOnly = true)
     public List<Cashier> findAll() {
@@ -36,7 +42,7 @@ public class CashierService {
     
     @Transactional(readOnly = true)
     public List<Cashier> findByStore(Long storeId) {
-        return cashierRepository.findByStoreId(storeId);
+        return cashierRepository.findByStore_Id(storeId);
     }
     
     @Transactional(readOnly = true)
@@ -65,6 +71,14 @@ public class CashierService {
         }
         return cashierRepository.save(cashier);
     }
+
+    /**
+     * Create a cashier, resolving person and store from IDs
+     */
+    public Cashier createWithIds(Cashier cashier, Long personId, Long storeId) {
+        resolveRelationships(cashier, personId, storeId);
+        return create(cashier);
+    }
     
     public Cashier update(Long id, Cashier cashier) {
         Cashier existing = cashierRepository.findById(id)
@@ -78,11 +92,19 @@ public class CashierService {
         
         existing.setNumber(cashier.getNumber());
         existing.setPassword(cashier.getPassword());
-        existing.setPersonId(cashier.getPersonId());
-        existing.setStoreId(cashier.getStoreId());
+        existing.setPerson(cashier.getPerson());
+        existing.setStore(cashier.getStore());
         existing.setIsActive(cashier.getIsActive());
         existing.setRole(cashier.getRole());
         return cashierRepository.save(existing);
+    }
+
+    /**
+     * Update a cashier, resolving person and store from IDs
+     */
+    public Cashier updateWithIds(Long id, Cashier cashier, Long personId, Long storeId) {
+        resolveRelationships(cashier, personId, storeId);
+        return update(id, cashier);
     }
     
     public Cashier terminate(Long id) {
@@ -107,7 +129,20 @@ public class CashierService {
     
     @Transactional(readOnly = true)
     public long countByStore(Long storeId) {
-        return cashierRepository.countByStoreId(storeId);
+        return cashierRepository.countByStore_Id(storeId);
+    }
+
+    private void resolveRelationships(Cashier cashier, Long personId, Long storeId) {
+        if (personId != null) {
+            Person person = personRepository.findById(personId)
+                    .orElseThrow(() -> new IllegalArgumentException("Person not found with id: " + personId));
+            cashier.setPerson(person);
+        }
+        if (storeId != null) {
+            Store store = storeRepository.findById(storeId)
+                    .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+            cashier.setStore(store);
+        }
     }
     
     private void validateCashier(Cashier cashier) {

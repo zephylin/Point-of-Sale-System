@@ -54,7 +54,9 @@ public class CashierDTO {
         private Long id;
         private String number;
         private Long personId;
+        private String personName;
         private Long storeId;
+        private String storeName;
         private Boolean isActive;
         private LocalDateTime hireDate;
         private LocalDateTime terminationDate;

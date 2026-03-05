@@ -13,11 +13,11 @@ import java.util.List;
 @Repository
 public interface SaleRepository extends JpaRepository<Sale, Long> {
     
-    List<Sale> findBySessionId(Long sessionId);
+    List<Sale> findBySession_Id(Long sessionId);
     
-    List<Sale> findByStoreId(Long storeId);
+    List<Sale> findByStore_Id(Long storeId);
     
-    List<Sale> findByCashierId(Long cashierId);
+    List<Sale> findByCashier_Id(Long cashierId);
     
     List<Sale> findByStatus(String status);
     
@@ -28,30 +28,30 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("SELECT s FROM Sale s WHERE s.dateTime >= :startDate AND s.dateTime < :endDate")
     List<Sale> findSalesByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
     
-    @Query("SELECT s FROM Sale s WHERE s.storeId = :storeId AND s.dateTime >= :startDate AND s.dateTime < :endDate")
+    @Query("SELECT s FROM Sale s WHERE s.store.id = :storeId AND s.dateTime >= :startDate AND s.dateTime < :endDate")
     List<Sale> findSalesByStoreAndDateRange(@Param("storeId") Long storeId, 
                                              @Param("startDate") LocalDateTime startDate, 
                                              @Param("endDate") LocalDateTime endDate);
     
-    @Query("SELECT s FROM Sale s WHERE s.cashierId = :cashierId AND s.dateTime >= :startDate AND s.dateTime < :endDate")
+    @Query("SELECT s FROM Sale s WHERE s.cashier.id = :cashierId AND s.dateTime >= :startDate AND s.dateTime < :endDate")
     List<Sale> findSalesByCashierAndDateRange(@Param("cashierId") Long cashierId, 
                                                @Param("startDate") LocalDateTime startDate, 
                                                @Param("endDate") LocalDateTime endDate);
     
-    @Query("SELECT SUM(s.total) FROM Sale s WHERE s.storeId = :storeId AND s.status = 'COMPLETED'")
+    @Query("SELECT SUM(s.total) FROM Sale s WHERE s.store.id = :storeId AND s.status = 'COMPLETED'")
     BigDecimal getTotalSalesByStore(@Param("storeId") Long storeId);
     
-    @Query("SELECT SUM(s.total) FROM Sale s WHERE s.sessionId = :sessionId AND s.status = 'COMPLETED'")
+    @Query("SELECT SUM(s.total) FROM Sale s WHERE s.session.id = :sessionId AND s.status = 'COMPLETED'")
     BigDecimal getTotalSalesBySession(@Param("sessionId") Long sessionId);
     
     @Query("SELECT SUM(s.total) FROM Sale s WHERE s.dateTime >= :startDate AND s.dateTime < :endDate AND s.status = 'COMPLETED'")
     BigDecimal getTotalSalesByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
     
-    long countBySessionId(Long sessionId);
+    long countBySession_Id(Long sessionId);
     
-    long countByStoreId(Long storeId);
+    long countByStore_Id(Long storeId);
     
-    long countByCashierId(Long cashierId);
+    long countByCashier_Id(Long cashierId);
     
     long countByStatus(String status);
 }

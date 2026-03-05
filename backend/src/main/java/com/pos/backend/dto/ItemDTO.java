@@ -86,7 +86,9 @@ public class ItemDTO {
         private Integer minQuantity;
         private Integer maxQuantity;
         private Long taxCategoryId;
+        private String taxCategoryName;
         private Long storeId;
+        private String storeName;
         private String barcode;
         private String sku;
         private String brand;

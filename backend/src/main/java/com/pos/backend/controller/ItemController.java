@@ -224,7 +224,7 @@ public class ItemController {
     public ResponseEntity<?> createItem(@Valid @RequestBody ItemDTO.Request request) {
         log.debug("POST /api/items - Create item: {}", request.getNumber());
         Item item = itemMapper.toEntity(request);
-        Item created = itemService.create(item);
+        Item created = itemService.createWithIds(item, request.getStoreId(), request.getTaxCategoryId());
         return ResponseEntity.status(HttpStatus.CREATED).body(itemMapper.toResponse(created));
     }
     
@@ -240,7 +240,7 @@ public class ItemController {
             @Valid @RequestBody ItemDTO.Request request) {
         log.debug("PUT /api/items/{} - Update item", id);
         Item item = itemMapper.toEntity(request);
-        Item updated = itemService.update(id, item);
+        Item updated = itemService.updateWithIds(id, item, request.getStoreId(), request.getTaxCategoryId());
         return ResponseEntity.ok(itemMapper.toResponse(updated));
     }
     

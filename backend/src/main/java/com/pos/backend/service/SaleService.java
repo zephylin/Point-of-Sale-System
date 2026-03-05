@@ -1,7 +1,13 @@
 package com.pos.backend.service;
 
+import com.pos.backend.domain.Cashier;
 import com.pos.backend.domain.Sale;
+import com.pos.backend.domain.Session;
+import com.pos.backend.domain.Store;
+import com.pos.backend.repository.CashierRepository;
 import com.pos.backend.repository.SaleRepository;
+import com.pos.backend.repository.SessionRepository;
+import com.pos.backend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +25,9 @@ import java.util.Optional;
 public class SaleService {
     
     private final SaleRepository saleRepository;
+    private final SessionRepository sessionRepository;
+    private final StoreRepository storeRepository;
+    private final CashierRepository cashierRepository;
     
     @Transactional(readOnly = true)
     public List<Sale> findAll() {
@@ -32,17 +41,17 @@ public class SaleService {
     
     @Transactional(readOnly = true)
     public List<Sale> findBySession(Long sessionId) {
-        return saleRepository.findBySessionId(sessionId);
+        return saleRepository.findBySession_Id(sessionId);
     }
     
     @Transactional(readOnly = true)
     public List<Sale> findByStore(Long storeId) {
-        return saleRepository.findByStoreId(storeId);
+        return saleRepository.findByStore_Id(storeId);
     }
     
     @Transactional(readOnly = true)
     public List<Sale> findByCashier(Long cashierId) {
-        return saleRepository.findByCashierId(cashierId);
+        return saleRepository.findByCashier_Id(cashierId);
     }
     
     @Transactional(readOnly = true)
@@ -80,6 +89,14 @@ public class SaleService {
         }
         return saleRepository.save(sale);
     }
+
+    /**
+     * Create a sale, resolving session, store, and cashier from IDs
+     */
+    public Sale createWithIds(Sale sale, Long sessionId, Long storeId, Long cashierId) {
+        resolveRelationships(sale, sessionId, storeId, cashierId);
+        return create(sale);
+    }
     
     public Sale update(Long id, Sale sale) {
         Sale existing = saleRepository.findById(id)
@@ -95,6 +112,14 @@ public class SaleService {
         existing.setPaymentMethod(sale.getPaymentMethod());
         existing.setNotes(sale.getNotes());
         return saleRepository.save(existing);
+    }
+
+    /**
+     * Update a sale, resolving session, store, and cashier from IDs
+     */
+    public Sale updateWithIds(Long id, Sale sale, Long sessionId, Long storeId, Long cashierId) {
+        resolveRelationships(sale, sessionId, storeId, cashierId);
+        return update(id, sale);
     }
     
     public Sale completeSale(Long id, BigDecimal amountPaid, String paymentMethod) {
@@ -135,21 +160,39 @@ public class SaleService {
     
     @Transactional(readOnly = true)
     public long countByStore(Long storeId) {
-        return saleRepository.countByStoreId(storeId);
+        return saleRepository.countByStore_Id(storeId);
+    }
+
+    private void resolveRelationships(Sale sale, Long sessionId, Long storeId, Long cashierId) {
+        if (sessionId != null) {
+            Session session = sessionRepository.findById(sessionId)
+                    .orElseThrow(() -> new IllegalArgumentException("Session not found with id: " + sessionId));
+            sale.setSession(session);
+        }
+        if (storeId != null) {
+            Store store = storeRepository.findById(storeId)
+                    .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+            sale.setStore(store);
+        }
+        if (cashierId != null) {
+            Cashier cashier = cashierRepository.findById(cashierId)
+                    .orElseThrow(() -> new IllegalArgumentException("Cashier not found with id: " + cashierId));
+            sale.setCashier(cashier);
+        }
     }
     
     private void validateSale(Sale sale) {
         if (sale == null) {
             throw new IllegalArgumentException("Sale cannot be null");
         }
-        if (sale.getSessionId() == null) {
-            throw new IllegalArgumentException("Session ID is required");
+        if (sale.getSession() == null) {
+            throw new IllegalArgumentException("Session is required");
         }
-        if (sale.getStoreId() == null) {
-            throw new IllegalArgumentException("Store ID is required");
+        if (sale.getStore() == null) {
+            throw new IllegalArgumentException("Store is required");
         }
-        if (sale.getCashierId() == null) {
-            throw new IllegalArgumentException("Cashier ID is required");
+        if (sale.getCashier() == null) {
+            throw new IllegalArgumentException("Cashier is required");
         }
     }
 }

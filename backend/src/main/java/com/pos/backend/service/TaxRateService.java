@@ -1,6 +1,8 @@
 package com.pos.backend.service;
 
+import com.pos.backend.domain.TaxCategory;
 import com.pos.backend.domain.TaxRate;
+import com.pos.backend.repository.TaxCategoryRepository;
 import com.pos.backend.repository.TaxRateRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class TaxRateService {
     
     private final TaxRateRepository taxRateRepository;
+    private final TaxCategoryRepository taxCategoryRepository;
     
     @Transactional(readOnly = true)
     public List<TaxRate> findAll() {
@@ -32,7 +35,7 @@ public class TaxRateService {
     
     @Transactional(readOnly = true)
     public List<TaxRate> findByTaxCategory(Long taxCategoryId) {
-        return taxRateRepository.findByTaxCategoryId(taxCategoryId);
+        return taxRateRepository.findByTaxCategory_Id(taxCategoryId);
     }
     
     @Transactional(readOnly = true)
@@ -42,13 +45,13 @@ public class TaxRateService {
     
     @Transactional(readOnly = true)
     public Optional<TaxRate> getCurrentRateForCategory(Long taxCategoryId) {
-        return taxRateRepository.findTopByTaxCategoryIdAndEffectiveDateLessThanEqualAndIsActiveTrueOrderByEffectiveDateDesc(
+        return taxRateRepository.findTopByTaxCategory_IdAndEffectiveDateLessThanEqualAndIsActiveTrueOrderByEffectiveDateDesc(
                 taxCategoryId, LocalDate.now());
     }
     
     @Transactional(readOnly = true)
     public Optional<TaxRate> getRateForCategoryAndDate(Long taxCategoryId, LocalDate date) {
-        return taxRateRepository.findTopByTaxCategoryIdAndEffectiveDateLessThanEqualAndIsActiveTrueOrderByEffectiveDateDesc(
+        return taxRateRepository.findTopByTaxCategory_IdAndEffectiveDateLessThanEqualAndIsActiveTrueOrderByEffectiveDateDesc(
                 taxCategoryId, date);
     }
     
@@ -59,6 +62,14 @@ public class TaxRateService {
         }
         return taxRateRepository.save(taxRate);
     }
+
+    /**
+     * Create a tax rate, resolving tax category from ID
+     */
+    public TaxRate createWithIds(TaxRate taxRate, Long taxCategoryId) {
+        resolveRelationships(taxRate, taxCategoryId);
+        return create(taxRate);
+    }
     
     public TaxRate update(Long id, TaxRate taxRate) {
         TaxRate existing = taxRateRepository.findById(id)
@@ -66,10 +77,18 @@ public class TaxRateService {
         validateTaxRate(taxRate);
         existing.setRate(taxRate.getRate());
         existing.setEffectiveDate(taxRate.getEffectiveDate());
-        existing.setTaxCategoryId(taxRate.getTaxCategoryId());
+        existing.setTaxCategory(taxRate.getTaxCategory());
         existing.setDescription(taxRate.getDescription());
         existing.setIsActive(taxRate.getIsActive());
         return taxRateRepository.save(existing);
+    }
+
+    /**
+     * Update a tax rate, resolving tax category from ID
+     */
+    public TaxRate updateWithIds(Long id, TaxRate taxRate, Long taxCategoryId) {
+        resolveRelationships(taxRate, taxCategoryId);
+        return update(id, taxRate);
     }
     
     public void delete(Long id) {
@@ -82,6 +101,14 @@ public class TaxRateService {
     @Transactional(readOnly = true)
     public long count() {
         return taxRateRepository.count();
+    }
+
+    private void resolveRelationships(TaxRate taxRate, Long taxCategoryId) {
+        if (taxCategoryId != null) {
+            TaxCategory taxCategory = taxCategoryRepository.findById(taxCategoryId)
+                    .orElseThrow(() -> new IllegalArgumentException("Tax category not found with id: " + taxCategoryId));
+            taxRate.setTaxCategory(taxCategory);
+        }
     }
     
     private void validateTaxRate(TaxRate taxRate) {
@@ -97,8 +124,8 @@ public class TaxRateService {
         if (taxRate.getEffectiveDate() == null) {
             throw new IllegalArgumentException("Effective date is required");
         }
-        if (taxRate.getTaxCategoryId() == null) {
-            throw new IllegalArgumentException("Tax category ID is required");
+        if (taxRate.getTaxCategory() == null) {
+            throw new IllegalArgumentException("Tax category is required");
         }
     }
 }

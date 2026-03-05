@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -69,16 +70,20 @@ public class Item {
     private Integer maxQuantity;
     
     /**
-     * Tax category ID reference (simplified - will add proper relationship later)
+     * Tax category relationship
      */
-    @Column(name = "tax_category_id")
-    private Long taxCategoryId;
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tax_category_id")
+    @ToString.Exclude
+    private TaxCategory taxCategory;
+
     /**
-     * Store ID reference (simplified - will add proper relationship later)
+     * Store relationship
      */
-    @Column(name = "store_id")
-    private Long storeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    @ToString.Exclude
+    private Store store;
     
     /**
      * Item barcode/UPC

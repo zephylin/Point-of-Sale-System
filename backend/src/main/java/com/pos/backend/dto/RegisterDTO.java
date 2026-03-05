@@ -45,6 +45,7 @@ public class RegisterDTO {
         private Long id;
         private String number;
         private Long storeId;
+        private String storeName;
         private String description;
         private Boolean isActive;
         private String status;

@@ -84,7 +84,7 @@ public class TaxRateController {
     @PostMapping
     public ResponseEntity<?> createTaxRate(@Valid @RequestBody TaxRateDTO.Request request) {
         TaxRate taxRate = taxRateMapper.toEntity(request);
-        TaxRate created = taxRateService.create(taxRate);
+        TaxRate created = taxRateService.createWithIds(taxRate, request.getTaxCategoryId());
         return ResponseEntity.status(HttpStatus.CREATED).body(taxRateMapper.toResponse(created));
     }
     
@@ -92,7 +92,7 @@ public class TaxRateController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTaxRate(@PathVariable Long id, @Valid @RequestBody TaxRateDTO.Request request) {
         TaxRate taxRate = taxRateMapper.toEntity(request);
-        TaxRate updated = taxRateService.update(id, taxRate);
+        TaxRate updated = taxRateService.updateWithIds(id, taxRate, request.getTaxCategoryId());
         return ResponseEntity.ok(taxRateMapper.toResponse(updated));
     }
     

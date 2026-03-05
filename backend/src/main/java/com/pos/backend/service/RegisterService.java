@@ -1,7 +1,9 @@
 package com.pos.backend.service;
 
 import com.pos.backend.domain.Register;
+import com.pos.backend.domain.Store;
 import com.pos.backend.repository.RegisterRepository;
+import com.pos.backend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class RegisterService {
     
     private final RegisterRepository registerRepository;
+    private final StoreRepository storeRepository;
     
     @Transactional(readOnly = true)
     public List<Register> findAll() {
@@ -36,7 +39,7 @@ public class RegisterService {
     
     @Transactional(readOnly = true)
     public List<Register> findByStore(Long storeId) {
-        return registerRepository.findByStoreId(storeId);
+        return registerRepository.findByStore_Id(storeId);
     }
     
     @Transactional(readOnly = true)
@@ -51,7 +54,7 @@ public class RegisterService {
     
     @Transactional(readOnly = true)
     public List<Register> findByStoreAndStatus(Long storeId, String status) {
-        return registerRepository.findByStoreIdAndStatus(storeId, status);
+        return registerRepository.findByStore_IdAndStatus(storeId, status);
     }
     
     public Register create(Register register) {
@@ -70,6 +73,14 @@ public class RegisterService {
         }
         return registerRepository.save(register);
     }
+
+    /**
+     * Create a register, resolving store from ID
+     */
+    public Register createWithIds(Register register, Long storeId) {
+        resolveRelationships(register, storeId);
+        return create(register);
+    }
     
     public Register update(Long id, Register register) {
         Register existing = registerRepository.findById(id)
@@ -82,11 +93,19 @@ public class RegisterService {
         }
         
         existing.setNumber(register.getNumber());
-        existing.setStoreId(register.getStoreId());
+        existing.setStore(register.getStore());
         existing.setDescription(register.getDescription());
         existing.setIsActive(register.getIsActive());
         existing.setStatus(register.getStatus());
         return registerRepository.save(existing);
+    }
+
+    /**
+     * Update a register, resolving store from ID
+     */
+    public Register updateWithIds(Long id, Register register, Long storeId) {
+        resolveRelationships(register, storeId);
+        return update(id, register);
     }
     
     public Register updateStatus(Long id, String status) {
@@ -110,7 +129,15 @@ public class RegisterService {
     
     @Transactional(readOnly = true)
     public long countByStore(Long storeId) {
-        return registerRepository.countByStoreId(storeId);
+        return registerRepository.countByStore_Id(storeId);
+    }
+
+    private void resolveRelationships(Register register, Long storeId) {
+        if (storeId != null) {
+            Store store = storeRepository.findById(storeId)
+                    .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + storeId));
+            register.setStore(store);
+        }
     }
     
     private void validateRegister(Register register) {
@@ -120,8 +147,8 @@ public class RegisterService {
         if (register.getNumber() == null || register.getNumber().trim().isEmpty()) {
             throw new IllegalArgumentException("Register number is required");
         }
-        if (register.getStoreId() == null) {
-            throw new IllegalArgumentException("Store ID is required");
+        if (register.getStore() == null) {
+            throw new IllegalArgumentException("Store is required");
         }
     }
 }

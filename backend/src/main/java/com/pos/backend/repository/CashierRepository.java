@@ -12,21 +12,21 @@ public interface CashierRepository extends JpaRepository<Cashier, Long> {
     
     Optional<Cashier> findByNumber(String number);
     
-    Optional<Cashier> findByPersonId(Long personId);
+    Optional<Cashier> findByPerson_Id(Long personId);
     
-    List<Cashier> findByStoreId(Long storeId);
+    List<Cashier> findByStore_Id(Long storeId);
     
     List<Cashier> findByIsActive(Boolean isActive);
     
-    List<Cashier> findByStoreIdAndIsActive(Long storeId, Boolean isActive);
+    List<Cashier> findByStore_IdAndIsActive(Long storeId, Boolean isActive);
     
     List<Cashier> findByRole(String role);
     
     boolean existsByNumber(String number);
     
-    boolean existsByPersonId(Long personId);
+    boolean existsByPerson_Id(Long personId);
     
-    long countByStoreId(Long storeId);
+    long countByStore_Id(Long storeId);
     
     long countByIsActive(Boolean isActive);
 }

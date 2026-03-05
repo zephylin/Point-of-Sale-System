@@ -82,7 +82,7 @@ public class CashierController {
     @PostMapping
     public ResponseEntity<?> createCashier(@Valid @RequestBody CashierDTO.Request request) {
         Cashier cashier = cashierMapper.toEntity(request);
-        Cashier created = cashierService.create(cashier);
+        Cashier created = cashierService.createWithIds(cashier, request.getPersonId(), request.getStoreId());
         return ResponseEntity.status(HttpStatus.CREATED).body(cashierMapper.toResponse(created));
     }
     
@@ -90,7 +90,7 @@ public class CashierController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCashier(@PathVariable Long id, @Valid @RequestBody CashierDTO.Request request) {
         Cashier cashier = cashierMapper.toEntity(request);
-        Cashier updated = cashierService.update(id, cashier);
+        Cashier updated = cashierService.updateWithIds(id, cashier, request.getPersonId(), request.getStoreId());
         return ResponseEntity.ok(cashierMapper.toResponse(updated));
     }
     

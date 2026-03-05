@@ -13,7 +13,7 @@ public class RegisterMapper {
     public Register toEntity(RegisterDTO.Request request) {
         Register register = new Register();
         register.setNumber(request.getNumber());
-        register.setStoreId(request.getStoreId());
+        // store is set by the service layer
         register.setDescription(request.getDescription());
         return register;
     }
@@ -22,7 +22,8 @@ public class RegisterMapper {
         return RegisterDTO.Response.builder()
                 .id(register.getId())
                 .number(register.getNumber())
-                .storeId(register.getStoreId())
+                .storeId(register.getStore() != null ? register.getStore().getId() : null)
+                .storeName(register.getStore() != null ? register.getStore().getName() : null)
                 .description(register.getDescription())
                 .isActive(register.getIsActive())
                 .status(register.getStatus())
@@ -33,7 +34,7 @@ public class RegisterMapper {
 
     public void updateEntity(Register register, RegisterDTO.Request request) {
         register.setNumber(request.getNumber());
-        register.setStoreId(request.getStoreId());
+        // store is set by the service layer
         register.setDescription(request.getDescription());
     }
 }

@@ -107,7 +107,7 @@ public class SessionController {
     @PostMapping
     public ResponseEntity<?> createSession(@Valid @RequestBody SessionDTO.Request request) {
         Session session = sessionMapper.toEntity(request);
-        Session created = sessionService.create(session);
+        Session created = sessionService.createWithIds(session, request.getCashierId(), request.getRegisterId());
         return ResponseEntity.status(HttpStatus.CREATED).body(sessionMapper.toResponse(created));
     }
     
@@ -115,7 +115,7 @@ public class SessionController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSession(@PathVariable Long id, @Valid @RequestBody SessionDTO.Request request) {
         Session session = sessionMapper.toEntity(request);
-        Session updated = sessionService.update(id, session);
+        Session updated = sessionService.updateWithIds(id, session, request.getCashierId(), request.getRegisterId());
         return ResponseEntity.ok(sessionMapper.toResponse(updated));
     }
     

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
@@ -26,16 +27,20 @@ public class SaleLineItem {
     private Long id;
     
     /**
-     * Sale ID that this line item belongs to
+     * Sale that this line item belongs to
      */
-    @Column(name = "sale_id", nullable = false)
-    private Long saleId;
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sale_id", nullable = false)
+    @ToString.Exclude
+    private Sale sale;
+
     /**
-     * Item ID being sold
+     * Item being sold
      */
-    @Column(name = "item_id", nullable = false)
-    private Long itemId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    @ToString.Exclude
+    private Item item;
     
     /**
      * Quantity of the item
@@ -86,27 +91,27 @@ public class SaleLineItem {
     private String notes;
     
     /**
-     * Constructor with sale ID, item ID, and quantity
-     * @param saleId Sale ID
-     * @param itemId Item ID
+     * Constructor with sale, item, and quantity
+     * @param sale Sale entity
+     * @param item Item entity
      * @param quantity Quantity
      */
-    public SaleLineItem(Long saleId, Long itemId, Integer quantity) {
-        this.saleId = saleId;
-        this.itemId = itemId;
+    public SaleLineItem(Sale sale, Item item, Integer quantity) {
+        this.sale = sale;
+        this.item = item;
         this.quantity = quantity;
     }
     
     /**
      * Constructor with all required fields
-     * @param saleId Sale ID
-     * @param itemId Item ID
+     * @param sale Sale entity
+     * @param item Item entity
      * @param quantity Quantity
      * @param unitPrice Unit price
      */
-    public SaleLineItem(Long saleId, Long itemId, Integer quantity, BigDecimal unitPrice) {
-        this.saleId = saleId;
-        this.itemId = itemId;
+    public SaleLineItem(Sale sale, Item item, Integer quantity, BigDecimal unitPrice) {
+        this.sale = sale;
+        this.item = item;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.extendedPrice = unitPrice.multiply(new BigDecimal(quantity));

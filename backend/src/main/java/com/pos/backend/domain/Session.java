@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,16 +28,20 @@ public class Session {
     private Long id;
     
     /**
-     * Cashier ID for this session
+     * Cashier for this session
      */
-    @Column(name = "cashier_id", nullable = false)
-    private Long cashierId;
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cashier_id", nullable = false)
+    @ToString.Exclude
+    private Cashier cashier;
+
     /**
-     * Register ID for this session
+     * Register for this session
      */
-    @Column(name = "register_id", nullable = false)
-    private Long registerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "register_id", nullable = false)
+    @ToString.Exclude
+    private Register register;
     
     /**
      * Session start date and time
@@ -88,25 +93,25 @@ public class Session {
     
     /**
      * Constructor with cashier and register
-     * @param cashierId Cashier ID
-     * @param registerId Register ID
+     * @param cashier Cashier entity
+     * @param register Register entity
      */
-    public Session(Long cashierId, Long registerId) {
-        this.cashierId = cashierId;
-        this.registerId = registerId;
+    public Session(Cashier cashier, Register register) {
+        this.cashier = cashier;
+        this.register = register;
         this.startDateTime = LocalDateTime.now();
         this.status = "ACTIVE";
     }
     
     /**
      * Constructor with cashier, register, and starting cash
-     * @param cashierId Cashier ID
-     * @param registerId Register ID
+     * @param cashier Cashier entity
+     * @param register Register entity
      * @param startingCash Starting cash amount
      */
-    public Session(Long cashierId, Long registerId, BigDecimal startingCash) {
-        this.cashierId = cashierId;
-        this.registerId = registerId;
+    public Session(Cashier cashier, Register register, BigDecimal startingCash) {
+        this.cashier = cashier;
+        this.register = register;
         this.startDateTime = LocalDateTime.now();
         this.startingCash = startingCash;
         this.status = "ACTIVE";

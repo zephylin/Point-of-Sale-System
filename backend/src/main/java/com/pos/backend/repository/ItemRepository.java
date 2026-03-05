@@ -67,14 +67,14 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
      * @param storeId Store ID
      * @return List of items in the store
      */
-    List<Item> findByStoreId(Long storeId);
+    List<Item> findByStore_Id(Long storeId);
     
     /**
      * Find items by tax category
      * @param taxCategoryId Tax category ID
      * @return List of items in the tax category
      */
-    List<Item> findByTaxCategoryId(Long taxCategoryId);
+    List<Item> findByTaxCategory_Id(Long taxCategoryId);
     
     /**
      * Find all active items
@@ -139,7 +139,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
      * @param storeId Store ID
      * @return Count of items
      */
-    long countByStoreId(Long storeId);
+    long countByStore_Id(Long storeId);
     
     /**
      * Count items by category

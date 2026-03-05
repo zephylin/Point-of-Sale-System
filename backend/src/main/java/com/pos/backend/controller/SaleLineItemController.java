@@ -70,7 +70,7 @@ public class SaleLineItemController {
     @PostMapping
     public ResponseEntity<?> createSaleLineItem(@Valid @RequestBody SaleLineItemDTO.Request request) {
         SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
-        SaleLineItem created = saleLineItemService.create(lineItem);
+        SaleLineItem created = saleLineItemService.createWithIds(lineItem, request.getSaleId(), request.getItemId());
         return ResponseEntity.status(HttpStatus.CREATED).body(saleLineItemMapper.toResponse(created));
     }
     
@@ -78,7 +78,7 @@ public class SaleLineItemController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSaleLineItem(@PathVariable Long id, @Valid @RequestBody SaleLineItemDTO.Request request) {
         SaleLineItem lineItem = saleLineItemMapper.toEntity(request);
-        SaleLineItem updated = saleLineItemService.update(id, lineItem);
+        SaleLineItem updated = saleLineItemService.updateWithIds(id, lineItem, request.getSaleId(), request.getItemId());
         return ResponseEntity.ok(saleLineItemMapper.toResponse(updated));
     }
     

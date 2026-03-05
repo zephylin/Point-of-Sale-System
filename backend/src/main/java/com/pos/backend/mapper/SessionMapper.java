@@ -12,8 +12,7 @@ public class SessionMapper {
 
     public Session toEntity(SessionDTO.Request request) {
         Session session = new Session();
-        session.setCashierId(request.getCashierId());
-        session.setRegisterId(request.getRegisterId());
+        // cashier and register are set by the service layer
         session.setStartingCash(request.getStartingCash());
         session.setNotes(request.getNotes());
         return session;
@@ -22,8 +21,12 @@ public class SessionMapper {
     public SessionDTO.Response toResponse(Session session) {
         return SessionDTO.Response.builder()
                 .id(session.getId())
-                .cashierId(session.getCashierId())
-                .registerId(session.getRegisterId())
+                .cashierId(session.getCashier() != null ? session.getCashier().getId() : null)
+                .cashierName(session.getCashier() != null && session.getCashier().getPerson() != null
+                        ? session.getCashier().getPerson().getFullName()
+                        : (session.getCashier() != null ? session.getCashier().getNumber() : null))
+                .registerId(session.getRegister() != null ? session.getRegister().getId() : null)
+                .registerNumber(session.getRegister() != null ? session.getRegister().getNumber() : null)
                 .startDateTime(session.getStartDateTime())
                 .endDateTime(session.getEndDateTime())
                 .startingCash(session.getStartingCash())
@@ -36,8 +39,7 @@ public class SessionMapper {
     }
 
     public void updateEntity(Session session, SessionDTO.Request request) {
-        session.setCashierId(request.getCashierId());
-        session.setRegisterId(request.getRegisterId());
+        // cashier and register are set by the service layer
         session.setStartingCash(request.getStartingCash());
         session.setNotes(request.getNotes());
     }

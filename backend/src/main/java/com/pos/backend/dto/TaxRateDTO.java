@@ -52,6 +52,7 @@ public class TaxRateDTO {
         private BigDecimal rate;
         private LocalDate effectiveDate;
         private Long taxCategoryId;
+        private String taxCategoryName;
         private String description;
         private Boolean isActive;
     }

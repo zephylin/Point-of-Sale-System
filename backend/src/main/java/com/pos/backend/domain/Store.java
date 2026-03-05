@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entity representing a Store in the Point of Sale System.
@@ -79,6 +82,31 @@ public class Store {
     @Column(length = 100)
     private String manager;
     
+    // ==================== RELATIONSHIPS ====================
+
+    /**
+     * Items belonging to this store
+     */
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Item> items = new ArrayList<>();
+
+    /**
+     * Cashiers working at this store
+     */
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Cashier> cashiers = new ArrayList<>();
+
+    /**
+     * Registers installed at this store
+     */
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Register> registers = new ArrayList<>();
+
+    // ==================== ATTRIBUTES ====================
+
     /**
      * Active status of the store
      */

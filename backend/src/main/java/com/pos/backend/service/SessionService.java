@@ -1,6 +1,10 @@
 package com.pos.backend.service;
 
+import com.pos.backend.domain.Cashier;
+import com.pos.backend.domain.Register;
 import com.pos.backend.domain.Session;
+import com.pos.backend.repository.CashierRepository;
+import com.pos.backend.repository.RegisterRepository;
 import com.pos.backend.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,8 @@ import java.util.Optional;
 public class SessionService {
     
     private final SessionRepository sessionRepository;
+    private final CashierRepository cashierRepository;
+    private final RegisterRepository registerRepository;
     
     @Transactional(readOnly = true)
     public List<Session> findAll() {
@@ -32,12 +38,12 @@ public class SessionService {
     
     @Transactional(readOnly = true)
     public List<Session> findByCashier(Long cashierId) {
-        return sessionRepository.findByCashierId(cashierId);
+        return sessionRepository.findByCashier_Id(cashierId);
     }
     
     @Transactional(readOnly = true)
     public List<Session> findByRegister(Long registerId) {
-        return sessionRepository.findByRegisterId(registerId);
+        return sessionRepository.findByRegister_Id(registerId);
     }
     
     @Transactional(readOnly = true)
@@ -47,12 +53,12 @@ public class SessionService {
     
     @Transactional(readOnly = true)
     public Optional<Session> findActiveSessionForCashier(Long cashierId) {
-        return sessionRepository.findTopByCashierIdAndStatusOrderByStartDateTimeDesc(cashierId, "ACTIVE");
+        return sessionRepository.findTopByCashier_IdAndStatusOrderByStartDateTimeDesc(cashierId, "ACTIVE");
     }
     
     @Transactional(readOnly = true)
     public Optional<Session> findActiveSessionForRegister(Long registerId) {
-        return sessionRepository.findTopByRegisterIdAndStatusOrderByStartDateTimeDesc(registerId, "ACTIVE");
+        return sessionRepository.findTopByRegister_IdAndStatusOrderByStartDateTimeDesc(registerId, "ACTIVE");
     }
     
     @Transactional(readOnly = true)
@@ -70,13 +76,21 @@ public class SessionService {
         }
         return sessionRepository.save(session);
     }
+
+    /**
+     * Create a session, resolving cashier and register from IDs
+     */
+    public Session createWithIds(Session session, Long cashierId, Long registerId) {
+        resolveRelationships(session, cashierId, registerId);
+        return create(session);
+    }
     
     public Session update(Long id, Session session) {
         Session existing = sessionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found with id: " + id));
         validateSession(session);
-        existing.setCashierId(session.getCashierId());
-        existing.setRegisterId(session.getRegisterId());
+        existing.setCashier(session.getCashier());
+        existing.setRegister(session.getRegister());
         existing.setStartingCash(session.getStartingCash());
         existing.setEndingCash(session.getEndingCash());
         existing.setExpectedCash(session.getExpectedCash());
@@ -84,6 +98,14 @@ public class SessionService {
         existing.setStatus(session.getStatus());
         existing.setNotes(session.getNotes());
         return sessionRepository.save(existing);
+    }
+
+    /**
+     * Update a session, resolving cashier and register from IDs
+     */
+    public Session updateWithIds(Long id, Session session, Long cashierId, Long registerId) {
+        resolveRelationships(session, cashierId, registerId);
+        return update(id, session);
     }
     
     public Session closeSession(Long id, BigDecimal endingCash) {
@@ -121,18 +143,31 @@ public class SessionService {
     
     @Transactional(readOnly = true)
     public long countByCashier(Long cashierId) {
-        return sessionRepository.countByCashierId(cashierId);
+        return sessionRepository.countByCashier_Id(cashierId);
+    }
+
+    private void resolveRelationships(Session session, Long cashierId, Long registerId) {
+        if (cashierId != null) {
+            Cashier cashier = cashierRepository.findById(cashierId)
+                    .orElseThrow(() -> new IllegalArgumentException("Cashier not found with id: " + cashierId));
+            session.setCashier(cashier);
+        }
+        if (registerId != null) {
+            Register register = registerRepository.findById(registerId)
+                    .orElseThrow(() -> new IllegalArgumentException("Register not found with id: " + registerId));
+            session.setRegister(register);
+        }
     }
     
     private void validateSession(Session session) {
         if (session == null) {
             throw new IllegalArgumentException("Session cannot be null");
         }
-        if (session.getCashierId() == null) {
-            throw new IllegalArgumentException("Cashier ID is required");
+        if (session.getCashier() == null) {
+            throw new IllegalArgumentException("Cashier is required");
         }
-        if (session.getRegisterId() == null) {
-            throw new IllegalArgumentException("Register ID is required");
+        if (session.getRegister() == null) {
+            throw new IllegalArgumentException("Register is required");
         }
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,10 +40,12 @@ public class TaxRate {
     private LocalDate effectiveDate;
     
     /**
-     * Tax category ID reference
+     * Tax category this rate belongs to
      */
-    @Column(name = "tax_category_id", nullable = false)
-    private Long taxCategoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tax_category_id", nullable = false)
+    @ToString.Exclude
+    private TaxCategory taxCategory;
     
     /**
      * Description of the tax rate
@@ -71,12 +74,12 @@ public class TaxRate {
      * Constructor with all required fields
      * @param rate Tax rate percentage
      * @param effectiveDate Effective date
-     * @param taxCategoryId Tax category ID
+     * @param taxCategory Tax category entity
      */
-    public TaxRate(BigDecimal rate, LocalDate effectiveDate, Long taxCategoryId) {
+    public TaxRate(BigDecimal rate, LocalDate effectiveDate, TaxCategory taxCategory) {
         this.rate = rate;
         this.effectiveDate = effectiveDate;
-        this.taxCategoryId = taxCategoryId;
+        this.taxCategory = taxCategory;
         this.isActive = true;
     }
     

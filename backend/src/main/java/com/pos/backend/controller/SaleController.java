@@ -110,7 +110,7 @@ public class SaleController {
     @PostMapping
     public ResponseEntity<?> createSale(@Valid @RequestBody SaleDTO.Request request) {
         Sale sale = saleMapper.toEntity(request);
-        Sale created = saleService.create(sale);
+        Sale created = saleService.createWithIds(sale, request.getSessionId(), request.getStoreId(), request.getCashierId());
         return ResponseEntity.status(HttpStatus.CREATED).body(saleMapper.toResponse(created));
     }
     
@@ -118,7 +118,7 @@ public class SaleController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSale(@PathVariable Long id, @Valid @RequestBody SaleDTO.Request request) {
         Sale sale = saleMapper.toEntity(request);
-        Sale updated = saleService.update(id, sale);
+        Sale updated = saleService.updateWithIds(id, sale, request.getSessionId(), request.getStoreId(), request.getCashierId());
         return ResponseEntity.ok(saleMapper.toResponse(updated));
     }
     

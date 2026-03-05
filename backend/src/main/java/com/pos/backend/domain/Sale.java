@@ -3,10 +3,12 @@ package com.pos.backend.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entity representing a sale transaction.
@@ -26,22 +28,35 @@ public class Sale {
     private Long id;
     
     /**
-     * Session ID for this sale
+     * Session this sale belongs to
      */
-    @Column(name = "session_id", nullable = false)
-    private Long sessionId;
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id", nullable = false)
+    @ToString.Exclude
+    private Session session;
+
     /**
-     * Store ID where sale occurred
+     * Store where sale occurred
      */
-    @Column(name = "store_id", nullable = false)
-    private Long storeId;
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    @ToString.Exclude
+    private Store store;
+
     /**
-     * Cashier ID who processed the sale
+     * Cashier who processed the sale
      */
-    @Column(name = "cashier_id", nullable = false)
-    private Long cashierId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cashier_id", nullable = false)
+    @ToString.Exclude
+    private Cashier cashier;
+
+    /**
+     * Line items in this sale
+     */
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<SaleLineItem> lineItems = new ArrayList<>();
     
     /**
      * Sale date and time
@@ -115,18 +130,19 @@ public class Sale {
         this.change = BigDecimal.ZERO;
         this.taxFree = false;
         this.status = "PENDING";
+        this.lineItems = new ArrayList<>();
     }
     
     /**
      * Constructor with session, store, and cashier
-     * @param sessionId Session ID
-     * @param storeId Store ID
-     * @param cashierId Cashier ID
+     * @param session Session entity
+     * @param store Store entity
+     * @param cashier Cashier entity
      */
-    public Sale(Long sessionId, Long storeId, Long cashierId) {
+    public Sale(Session session, Store store, Cashier cashier) {
         this();
-        this.sessionId = sessionId;
-        this.storeId = storeId;
-        this.cashierId = cashierId;
+        this.session = session;
+        this.store = store;
+        this.cashier = cashier;
     }
 }

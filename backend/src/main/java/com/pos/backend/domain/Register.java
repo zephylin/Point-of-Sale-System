@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -32,10 +33,12 @@ public class Register {
     private String number;
     
     /**
-     * Store ID where register is located
+     * Store where register is located
      */
-    @Column(name = "store_id", nullable = false)
-    private Long storeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    @ToString.Exclude
+    private Store store;
     
     /**
      * Register description/location
@@ -79,13 +82,13 @@ public class Register {
     }
     
     /**
-     * Constructor with register number and store ID
+     * Constructor with register number and store
      * @param number Register number
-     * @param storeId Store ID
+     * @param store Store entity
      */
-    public Register(String number, Long storeId) {
+    public Register(String number, Store store) {
         this.number = number;
-        this.storeId = storeId;
+        this.store = store;
         this.isActive = true;
         this.status = "CLOSED";
         this.installedDate = LocalDateTime.now();
