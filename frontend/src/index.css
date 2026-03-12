@@ -517,3 +517,299 @@ tr:hover td {
 
 .api-status .dot.online { background: var(--success); }
 .api-status .dot.offline { background: var(--danger); }
+
+/* ===== POS Terminal ===== */
+.pos-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px);
+}
+
+.pos-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pos-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pos-header-left h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.pos-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pos-session-info {
+  font-size: 14px;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.pos-layout {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+.pos-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pos-sidebar-panel {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pos-sale-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* ── search ── */
+.pos-search-area {
+  position: relative;
+}
+
+.pos-search-box {
+  position: relative;
+}
+
+.pos-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  pointer-events: none;
+}
+
+.pos-search-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 2px solid var(--gray-300);
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.15s;
+  background: white;
+}
+
+.pos-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.pos-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 50;
+  margin-top: 4px;
+}
+
+.pos-search-loading {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--gray-400);
+}
+
+.pos-search-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background 0.1s;
+}
+
+.pos-search-item:hover {
+  background: var(--primary-light);
+}
+
+.pos-search-item:last-child { border-bottom: none; }
+
+.pos-search-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pos-search-item-meta {
+  font-size: 12px;
+  color: var(--gray-400);
+}
+
+.pos-search-item-price {
+  font-weight: 600;
+  color: var(--gray-800);
+  white-space: nowrap;
+}
+
+/* ── quantity control ── */
+.pos-qty-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.pos-qty-value {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ── totals panel ── */
+.pos-totals-card {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.pos-totals-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 16px;
+}
+
+.pos-totals-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--gray-600);
+}
+
+.pos-totals-total {
+  border-top: 2px solid var(--gray-200);
+  margin-top: 8px;
+  padding-top: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.pos-pay-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+}
+
+.pos-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── start card ── */
+.pos-start-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 2px dashed var(--gray-300);
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.pos-start-card h3 {
+  font-size: 18px;
+  color: var(--gray-700);
+  margin-bottom: 4px;
+}
+
+.pos-start-card p {
+  font-size: 14px;
+  color: var(--gray-400);
+}
+
+/* ── payment modal ── */
+.pos-pay-methods {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.pos-pay-method-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 8px;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-600);
+  transition: all 0.15s;
+}
+
+.pos-pay-method-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.pos-pay-method-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.pos-pay-summary {
+  background: var(--gray-50);
+  border-radius: 8px;
+  padding: 16px;
+}

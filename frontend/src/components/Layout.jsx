@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -8,11 +9,13 @@ import {
   Receipt,
   Monitor,
   Percent,
+  ShoppingCart,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/',               icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/stores',         icon: Store,           label: 'Stores' },
+  { to: '/pos',            icon: ShoppingCart,    label: 'POS Terminal', section: 'Sales' },
+  { to: '/stores',         icon: Store,           label: 'Stores',         section: 'Management' },
   { to: '/items',          icon: Package,         label: 'Items' },
   { to: '/persons',        icon: Users,           label: 'Persons' },
   { to: '/cashiers',       icon: UserCheck,       label: 'Cashiers' },
@@ -30,16 +33,18 @@ export default function Layout() {
         </div>
         <nav className="sidebar-nav">
           <div className="sidebar-section-label">Main</div>
-          {navItems.map(({ to, icon: Icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === '/'}
-              className={({ isActive }) => isActive ? 'active' : ''}
-            >
-              <Icon />
-              {label}
-            </NavLink>
+          {navItems.map(({ to, icon: Icon, label, section }) => (
+            <React.Fragment key={to}>
+              {section && <div className="sidebar-section-label">{section}</div>}
+              <NavLink
+                to={to}
+                end={to === '/'}
+                className={({ isActive }) => isActive ? 'active' : ''}
+              >
+                <Icon />
+                {label}
+              </NavLink>
+            </React.Fragment>
           ))}
         </nav>
         <div className="sidebar-footer">

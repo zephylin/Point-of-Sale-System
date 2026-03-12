@@ -74,9 +74,28 @@ export const registerApi = {
   getByStore:    (storeId)    => api.get(`/registers/store/${storeId}`).then(r => r.data),
 };
 
+export const sessionApi = {
+  getAll:        ()           => api.get('/sessions').then(r => r.data),
+  getById:       (id)         => api.get(`/sessions/${id}`).then(r => r.data),
+  create:        (data)       => api.post('/sessions', data).then(r => r.data),
+  getByStatus:   (status)     => api.get(`/sessions/status/${status}`).then(r => r.data),
+  getActiveByCashier: (id)    => api.get(`/sessions/cashier/${id}/active`).then(r => r.data),
+  close:         (id, data)   => api.patch(`/sessions/${id}/close`, data).then(r => r.data),
+};
+
 export const saleApi = {
   getAll:        ()           => api.get('/sales').then(r => r.data),
   getById:       (id)         => api.get(`/sales/${id}`).then(r => r.data),
   create:        (data)       => api.post('/sales', data).then(r => r.data),
+  complete:      (id, data)   => api.patch(`/sales/${id}/complete`, data).then(r => r.data),
+  voidSale:      (id, data)   => api.patch(`/sales/${id}/void`, data).then(r => r.data),
+  getBySession:  (sessionId)  => api.get(`/sales/session/${sessionId}`).then(r => r.data),
   count:         ()           => api.get('/sales/count').then(r => r.data),
+};
+
+export const saleLineItemApi = {
+  getBySale:     (saleId)     => api.get(`/sale-line-items/sale/${saleId}`).then(r => r.data),
+  create:        (data)       => api.post('/sale-line-items', data).then(r => r.data),
+  update:        (id, data)   => api.put(`/sale-line-items/${id}`, data).then(r => r.data),
+  delete:        (id)         => api.delete(`/sale-line-items/${id}`),
 };
