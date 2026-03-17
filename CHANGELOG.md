@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Payment entity** with full stack support for CASH, CREDIT, and CHECK payment types
+  - `Payment.java` domain entity with single-table design (payment_type discriminator)
+  - `PaymentRepository.java` with queries by sale, type, date range, and aggregations
+  - `PaymentService.java` with business logic, type-specific validation, and auto-authorization
+  - `PaymentDTO.java` with Request/Response inner classes and Jakarta validation
+  - `PaymentMapper.java` for entity ↔ DTO conversion
+  - `PaymentController.java` with full REST API:
+    - GET /api/payments - Get all payments
+    - GET /api/payments/{id} - Get by ID
+    - GET /api/payments/sale/{saleId} - Get payments for a sale
+    - GET /api/payments/type/{paymentType} - Get by payment type
+    - GET /api/payments/date-range - Get by date range
+    - GET /api/payments/total/sale/{saleId} - Total payments for a sale
+    - GET /api/payments/total/cash/session/{sessionId} - Total cash by session
+    - POST /api/payments - Create payment
+    - PUT /api/payments/{id} - Update payment
+    - DELETE /api/payments/{id} - Delete payment
+    - GET /api/payments/count - Count all payments
+    - GET /api/payments/count/sale/{saleId} - Count by sale
+- Payment relationship added to Sale entity (`@OneToMany` payments list)
 - Complete Spring Boot 3.2 backend structure with Maven
 - Person entity with JPA annotations and Lombok
 - PersonRepository with Spring Data JPA

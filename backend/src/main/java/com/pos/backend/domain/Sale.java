@@ -57,6 +57,13 @@ public class Sale {
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<SaleLineItem> lineItems = new ArrayList<>();
+
+    /**
+     * Payments applied to this sale
+     */
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Payment> payments = new ArrayList<>();
     
     /**
      * Sale date and time
@@ -131,6 +138,7 @@ public class Sale {
         this.taxFree = false;
         this.status = "PENDING";
         this.lineItems = new ArrayList<>();
+        this.payments = new ArrayList<>();
     }
     
     /**
