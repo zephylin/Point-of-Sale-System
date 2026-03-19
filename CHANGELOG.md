@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Controller integration tests** (`@WebMvcTest`) for all 11 REST controllers (134 new tests, 427 total)
+  - `StoreControllerTest.java` — GET all/byId/search, POST create with validation, PUT update, DELETE, PATCH deactivate, GET count
+  - `ItemControllerTest.java` — GET all/byId/search/barcode/active, POST create with validation, PUT update, DELETE, GET count
+  - `PersonControllerTest.java` — GET all/byId/search, POST create with validation (name, SSN format), PUT update, DELETE, GET count
+  - `CashierControllerTest.java` — GET all/byId/byNumber/byStore/active, POST createWithIds with validation, PUT update, PATCH terminate, DELETE, GET count
+  - `RegisterControllerTest.java` — GET all/byId/byNumber/byStore/active, POST createWithIds with validation, PUT update, PATCH updateStatus, DELETE, GET count
+  - `TaxCategoryControllerTest.java` — GET all/byId/byName/search/active, POST create with validation, PUT update, PATCH deactivate, DELETE, GET count
+  - `TaxRateControllerTest.java` — GET all/byId/byCategory/currentRate, POST create with validation (rate bounds), PUT update, DELETE, GET count
+  - `SessionControllerTest.java` — GET all/byId/byCashier/activeByCashier, POST createWithIds with validation, PATCH close, DELETE, GET count
+  - `SaleControllerTest.java` — GET all/byId/bySession/totalByStore, POST createWithIds with validation, PATCH complete/void, DELETE, GET count
+  - `SaleLineItemControllerTest.java` — GET all/byId/bySale/totalQuantity, POST createWithIds with validation (quantity min), PUT update, DELETE, GET count
+  - `PaymentControllerTest.java` — GET all/byId/bySale/byType/totalBySale, POST create with validation (paymentType regex, amount positive), PUT update with 404, DELETE, GET count
+  - Uses `@AutoConfigureMockMvc(addFilters = false)` to bypass Spring Security in tests
+  - Tests verify HTTP status codes (200, 201, 204, 400, 404), JSON response paths, and Jakarta validation
 - **DataSeeder** (`config/DataSeeder.java`) — seeds the H2 database with sample data on startup
   - 1 store (David's Quick Mart) with address and contact info
   - 3 persons (David, Sally, Mike) with full address details
