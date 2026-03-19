@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **DataSeeder** (`config/DataSeeder.java`) — seeds the H2 database with sample data on startup
+  - 1 store (David's Quick Mart) with address and contact info
+  - 3 persons (David, Sally, Mike) with full address details
+  - 3 cashiers with roles (Supervisor, Cashier) linked to persons and store
+  - 4 tax categories (Food 7%, Beverage 0%, General Merchandise 8.5%, Alcohol 13%) with rates
+  - 10 items (sandwiches, drinks, snacks, office supplies) with prices, stock levels, barcodes, and SKUs
+  - 3 registers linked to the store
+  - Only runs on non-prod profiles; skips seeding if data already exists
+  - Data inspired by the original `StoreData.csv`
 - **Payment entity** with full stack support for CASH, CREDIT, and CHECK payment types
   - `Payment.java` domain entity with single-table design (payment_type discriminator)
   - `PaymentRepository.java` with queries by sale, type, date range, and aggregations
