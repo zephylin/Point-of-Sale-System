@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 3 registers linked to the store
   - Only runs on non-prod profiles; skips seeding if data already exists
   - Data inspired by the original `StoreData.csv`
+- **Unit tests** for all remaining service classes (6 new test files, 293 total tests pass)
+  - `CashierServiceTest.java` — CRUD, createWithIds, terminate, validation
+  - `RegisterServiceTest.java` — CRUD, createWithIds, updateStatus, validation
+  - `TaxCategoryServiceTest.java` — CRUD, search, deactivate, validation
+  - `TaxRateServiceTest.java` — CRUD, createWithIds, rate lookups, validation
+  - `PaymentServiceTest.java` — CASH/CREDIT/CHECK creation, validation, aggregations
+  - `SaleLineItemServiceTest.java` — CRUD, createWithIds, price calculations, validation
 - **Payment entity** with full stack support for CASH, CREDIT, and CHECK payment types
   - `Payment.java` domain entity with single-table design (payment_type discriminator)
   - `PaymentRepository.java` with queries by sale, type, date range, and aggregations
