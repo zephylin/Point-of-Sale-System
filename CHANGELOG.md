@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **CI/CD Pipeline** with GitHub Actions (`.github/workflows/ci.yml`)
+  - Runs automatically on push to `main` and on pull requests
+  - **Backend job**: Checks out code, sets up JDK 21 (Temurin), caches Maven dependencies, runs `mvn test` (427 tests)
+  - **Frontend job**: Checks out code, sets up Node.js 20, caches npm, runs `npm ci` and `npm run build`
+  - Uploads Surefire test reports as artifacts (7-day retention)
+  - Jobs run in parallel for faster feedback
+- CI status badge added to README.md
+- README.md updated with accurate project status and technology stack
 - **Controller integration tests** (`@WebMvcTest`) for all 11 REST controllers (134 new tests, 427 total)
   - `StoreControllerTest.java` — GET all/byId/search, POST create with validation, PUT update, DELETE, PATCH deactivate, GET count
   - `ItemControllerTest.java` — GET all/byId/search/barcode/active, POST create with validation, PUT update, DELETE, GET count

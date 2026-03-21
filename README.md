@@ -1,5 +1,7 @@
 # Point-of-Sale-System 🛒 🚀
 
+[![CI Pipeline](https://github.com/zephylin/Point-of-Sale-System/actions/workflows/ci.yml/badge.svg)](https://github.com/zephylin/Point-of-Sale-System/actions/workflows/ci.yml)
+
 ## Overview 📋
 A modern, full-stack Point of Sale system currently undergoing modernization from a legacy Java Swing application to a contemporary web-based architecture using Spring Boot and React.
 
@@ -7,30 +9,28 @@ The original system was a Java desktop application designed to manage retail ope
 
 ## 🎯 Modernization Status
 
-**Current Phase:** Backend Development (Week 1-2 of 7-week plan)
+**Current Phase:** Testing & CI/CD (Week 4-5 of 7-week plan)
 
 ### ✅ Completed
-- [x] Spring Boot 3.2 backend project structure
-- [x] H2 in-memory database for development
-- [x] Person entity with full CRUD operations
-- [x] Repository layer with Spring Data JPA
-- [x] Service layer with business logic & validation
-- [x] REST API with comprehensive endpoints
+- [x] Spring Boot 3.2 backend with 11 domain entities and full JPA relationships
+- [x] H2 in-memory database with sample data seeder
+- [x] Repository layer with Spring Data JPA (11 repositories with custom queries)
+- [x] Service layer with business logic & validation (11 services)
+- [x] REST API with 11 controllers and comprehensive endpoints
+- [x] DTOs, Mappers, and Jakarta Bean Validation
+- [x] Global exception handling with custom error responses
 - [x] Swagger/OpenAPI documentation
-- [x] Security configuration for development
-- [x] Comprehensive work plan documentation
-
-### 🚧 In Progress
-- [ ] Additional domain entities (Store, Item, TaxCategory, etc.)
-- [ ] Entity relationships and complex business logic
-- [ ] PostgreSQL integration for production
+- [x] Security configuration (Spring Security, BCrypt)
+- [x] React frontend with 8 pages (Dashboard, POS Terminal, CRUD management)
+- [x] Unit tests for all 11 service classes (293 tests)
+- [x] Controller integration tests for all 11 REST controllers (134 tests)
+- [x] **427 total tests passing**
+- [x] CI/CD pipeline with GitHub Actions
 
 ### 📋 Planned
-- [ ] Complete REST API for all entities
 - [ ] JWT authentication & authorization
-- [ ] React + TypeScript frontend
 - [ ] Docker containerization
-- [ ] CI/CD pipeline
+- [ ] PostgreSQL integration for production
 - [ ] Cloud deployment
 
 ## 🏗️ Architecture
@@ -119,7 +119,7 @@ curl http://localhost:8080/api/persons/1
 
 ## 🛠️ Technology Stack
 
-### Current Backend
+### Backend
 - **Framework**: Spring Boot 3.2
 - **Language**: Java 21
 - **Database**: H2 (development), PostgreSQL (planned for production)
@@ -127,19 +127,19 @@ curl http://localhost:8080/api/persons/1
 - **Security**: Spring Security
 - **Documentation**: SpringDoc OpenAPI (Swagger)
 - **Build Tool**: Maven
+- **Testing**: JUnit 5, Mockito, AssertJ, MockMvc (427 tests)
 
-### Planned Frontend
-- **Framework**: React 18
-- **Language**: TypeScript
-- **UI Library**: Material-UI (MUI)
-- **State Management**: Zustand
+### Frontend
+- **Framework**: React 19
+- **UI Library**: Lucide React Icons
+- **Routing**: React Router 7
 - **HTTP Client**: Axios
-- **Build Tool**: Vite
+- **Build Tool**: Vite 6
 
-### Planned DevOps
-- **Containerization**: Docker
-- **CI/CD**: GitHub Actions
-- **Deployment**: Render.com / Vercel
+### DevOps
+- **CI/CD**: GitHub Actions (automated tests on push/PR)
+- **Containerization**: Docker (planned)
+- **Deployment**: Render.com / Vercel (planned)
 
 ## 📊 Legacy Features
 
