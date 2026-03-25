@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Docker containerization** for full-stack deployment
+  - `backend/Dockerfile` — Multi-stage build (Maven 3.9 + JDK 21 build, JRE 21 runtime), runs as non-root user
+  - `frontend/Dockerfile` — Multi-stage build (Node 20 build, nginx Alpine runtime)
+  - `frontend/nginx.conf` — Nginx reverse proxy config that routes `/api/` and `/swagger-ui/` to backend, serves React SPA with client-side routing
+  - `docker-compose.yml` — Orchestrates 3 services: PostgreSQL 16, Spring Boot backend, React frontend
+  - `application-docker.properties` — Spring profile for Docker environment (PostgreSQL dialect, env-var datasource)
+  - `.dockerignore` files for backend and frontend
+  - PostgreSQL health check with `pg_isready` before backend starts
+  - Named volume `postgres_data` for persistent database storage
 - **CI/CD Pipeline** with GitHub Actions (`.github/workflows/ci.yml`)
   - Runs automatically on push to `main` and on pull requests
   - **Backend job**: Checks out code, sets up JDK 21 (Temurin), caches Maven dependencies, runs `mvn test` (427 tests)

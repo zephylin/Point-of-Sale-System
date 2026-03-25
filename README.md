@@ -9,7 +9,7 @@ The original system was a Java desktop application designed to manage retail ope
 
 ## 🎯 Modernization Status
 
-**Current Phase:** Testing & CI/CD (Week 4-5 of 7-week plan)
+**Current Phase:** Containerization & Deployment (Week 6-7 of 7-week plan)
 
 ### ✅ Completed
 - [x] Spring Boot 3.2 backend with 11 domain entities and full JPA relationships
@@ -26,11 +26,10 @@ The original system was a Java desktop application designed to manage retail ope
 - [x] Controller integration tests for all 11 REST controllers (134 tests)
 - [x] **427 total tests passing**
 - [x] CI/CD pipeline with GitHub Actions
+- [x] Docker containerization (backend, frontend, PostgreSQL)
 
 ### 📋 Planned
 - [ ] JWT authentication & authorization
-- [ ] Docker containerization
-- [ ] PostgreSQL integration for production
 - [ ] Cloud deployment
 
 ## 🏗️ Architecture
@@ -81,6 +80,25 @@ mvn spring-boot:run
 ```
 
 The application starts on `http://localhost:8080`
+
+### Running with Docker
+
+```bash
+# Start all services (PostgreSQL, backend, frontend)
+docker compose up --build
+
+# Stop all services
+docker compose down
+
+# Stop and remove data volumes
+docker compose down -v
+```
+
+Services:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8080
+- **Swagger UI**: http://localhost:3000/swagger-ui/ (proxied through nginx)
+- **PostgreSQL**: localhost:5432 (user: `posuser`, db: `posdb`)
 
 ### Accessing the API
 
@@ -138,7 +156,8 @@ curl http://localhost:8080/api/persons/1
 
 ### DevOps
 - **CI/CD**: GitHub Actions (automated tests on push/PR)
-- **Containerization**: Docker (planned)
+- **Containerization**: Docker with multi-stage builds
+- **Orchestration**: Docker Compose (PostgreSQL + backend + frontend)
 - **Deployment**: Render.com / Vercel (planned)
 
 ## 📊 Legacy Features

@@ -6,6 +6,8 @@ This directory contains the Spring Boot backend for the Point-of-Sale System.
 
 ```
 backend/
+├── Dockerfile                               # Multi-stage Docker build
+├── .dockerignore                            # Docker build exclusions
 ├── src/
 │   ├── main/
 │   │   ├── java/com/pos/backend/
@@ -22,8 +24,9 @@ backend/
 │   │   │   │   └── SecurityConfig.java      # Spring Security setup
 │   │   │   └── exception/                   # Custom exceptions & error handling
 │   │   └── resources/
-│   │       ├── application.properties       # Main configuration
+│   │       ├── application.properties       # Main configuration (H2, dev)
 │   │       ├── application-dev.properties   # Development profile
+│   │       ├── application-docker.properties # Docker profile (PostgreSQL)
 │   │       └── application-prod.properties  # Production profile
 │   └── test/                                # Unit and integration tests
 └── pom.xml                                  # Maven dependencies
