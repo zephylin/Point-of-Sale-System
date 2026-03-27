@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **JWT Authentication & Authorization** — Full-stack secure login system
+  - `JwtService.java` — Token generation and validation using JJWT 0.12.5 (HS256, configurable secret and expiration)
+  - `JwtAuthenticationFilter.java` — Extracts Bearer token from Authorization header, sets Spring Security context
+  - `CustomUserDetailsService.java` — Loads cashier by number from database, maps role to Spring Security authority
+  - `AuthController.java` — POST `/api/auth/login` endpoint with cashier number/password authentication
+  - `AuthDTO.java` — LoginRequest (with validation) and LoginResponse (token, cashierNumber, name, role)
+  - Updated `SecurityConfig.java` — Stateless sessions, JWT filter chain, permits auth/swagger/h2-console, protects all other endpoints
+  - Updated `DataSeeder.java` — Passwords now BCrypt-hashed via PasswordEncoder
+  - Updated `CashierService.java` — Encodes passwords on create and update
+  - Updated `application.properties` — JWT secret and expiration configuration (env-var overridable)
+  - Added JJWT dependencies (`jjwt-api`, `jjwt-impl`, `jjwt-jackson` 0.12.5) to `pom.xml`
+  - `Login.jsx` — Login page with cashier number/password form, error handling, demo account hints
+  - Updated `App.jsx` — Protected routes with auth guard, login/logout state management
+  - Updated `Layout.jsx` — Sidebar shows logged-in user name, role, and logout button
+  - Updated `client.js` — Request interceptor adds Bearer token, 401 response redirects to login
+  - Login page CSS in `index.css` — Gradient background, card layout, responsive design
+  - Updated all 11 controller tests with security mock beans (`JwtService`, `UserDetailsService`)
+  - Updated `CashierServiceTest` with `PasswordEncoder` mock
+  - All 427 tests passing
 - **Docker containerization** for full-stack deployment
   - `backend/Dockerfile` — Multi-stage build (Maven 3.9 + JDK 21 build, JRE 21 runtime), runs as non-root user
   - `frontend/Dockerfile` — Multi-stage build (Node 20 build, nginx Alpine runtime)

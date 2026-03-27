@@ -8,6 +8,7 @@ import com.pos.backend.repository.PersonRepository;
 import com.pos.backend.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class CashierService {
     private final CashierRepository cashierRepository;
     private final PersonRepository personRepository;
     private final StoreRepository storeRepository;
+    private final PasswordEncoder passwordEncoder;
     
     @Transactional(readOnly = true)
     public List<Cashier> findAll() {
@@ -60,6 +62,7 @@ public class CashierService {
         if (cashierRepository.existsByNumber(cashier.getNumber())) {
             throw new IllegalArgumentException("Cashier with number '" + cashier.getNumber() + "' already exists");
         }
+        cashier.setPassword(passwordEncoder.encode(cashier.getPassword()));
         if (cashier.getIsActive() == null) {
             cashier.setIsActive(true);
         }
@@ -91,7 +94,7 @@ public class CashierService {
         }
         
         existing.setNumber(cashier.getNumber());
-        existing.setPassword(cashier.getPassword());
+        existing.setPassword(passwordEncoder.encode(cashier.getPassword()));
         existing.setPerson(cashier.getPerson());
         existing.setStore(cashier.getStore());
         existing.setIsActive(cashier.getIsActive());

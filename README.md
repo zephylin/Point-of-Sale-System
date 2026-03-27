@@ -21,7 +21,8 @@ The original system was a Java desktop application designed to manage retail ope
 - [x] Global exception handling with custom error responses
 - [x] Swagger/OpenAPI documentation
 - [x] Security configuration (Spring Security, BCrypt)
-- [x] React frontend with 8 pages (Dashboard, POS Terminal, CRUD management)
+- [x] JWT authentication & authorization (login, protected routes, BCrypt passwords)
+- [x] React frontend with 8 pages + login (Dashboard, POS Terminal, CRUD management)
 - [x] Unit tests for all 11 service classes (293 tests)
 - [x] Controller integration tests for all 11 REST controllers (134 tests)
 - [x] **427 total tests passing**
@@ -29,7 +30,6 @@ The original system was a Java desktop application designed to manage retail ope
 - [x] Docker containerization (backend, frontend, PostgreSQL)
 
 ### 📋 Planned
-- [ ] JWT authentication & authorization
 - [ ] Cloud deployment
 
 ## 🏗️ Architecture

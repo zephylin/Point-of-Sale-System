@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class DataSeeder implements CommandLineRunner {
     private final TaxRateRepository taxRateRepository;
     private final ItemRepository itemRepository;
     private final RegisterRepository registerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -68,7 +70,7 @@ public class DataSeeder implements CommandLineRunner {
         // ── Cashiers ─────────────────────────────────────────
         Cashier cashier1 = new Cashier();
         cashier1.setNumber("C001");
-        cashier1.setPassword("password1");
+        cashier1.setPassword(passwordEncoder.encode("password1"));
         cashier1.setPerson(david);
         cashier1.setStore(store);
         cashier1.setIsActive(true);
@@ -78,7 +80,7 @@ public class DataSeeder implements CommandLineRunner {
 
         Cashier cashier2 = new Cashier();
         cashier2.setNumber("C002");
-        cashier2.setPassword("password2");
+        cashier2.setPassword(passwordEncoder.encode("password2"));
         cashier2.setPerson(sally);
         cashier2.setStore(store);
         cashier2.setIsActive(true);
@@ -88,7 +90,7 @@ public class DataSeeder implements CommandLineRunner {
 
         Cashier cashier3 = new Cashier();
         cashier3.setNumber("C003");
-        cashier3.setPassword("password3");
+        cashier3.setPassword(passwordEncoder.encode("password3"));
         cashier3.setPerson(mike);
         cashier3.setStore(store);
         cashier3.setIsActive(true);

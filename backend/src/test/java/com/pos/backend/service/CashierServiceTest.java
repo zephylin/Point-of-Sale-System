@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CashierService Unit Tests")
@@ -37,6 +39,9 @@ class CashierServiceTest {
     @Mock
     private StoreRepository storeRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private CashierService cashierService;
 
@@ -46,6 +51,8 @@ class CashierServiceTest {
 
     @BeforeEach
     void setUp() {
+        lenient().when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+
         samplePerson = new Person();
         samplePerson.setId(1L);
         samplePerson.setFirstName("David");

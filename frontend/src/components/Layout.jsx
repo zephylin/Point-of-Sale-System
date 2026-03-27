@@ -10,6 +10,7 @@ import {
   Monitor,
   Percent,
   ShoppingCart,
+  LogOut,
 } from 'lucide-react';
 
 const navItems = [
@@ -23,7 +24,7 @@ const navItems = [
   { to: '/registers',      icon: Monitor,         label: 'Registers' },
 ];
 
-export default function Layout() {
+export default function Layout({ user, onLogout }) {
   return (
     <div className="app-layout">
       <aside className="sidebar">
@@ -48,7 +49,17 @@ export default function Layout() {
           ))}
         </nav>
         <div className="sidebar-footer">
-          POS Backend v1.0.0
+          {user && (
+            <div className="sidebar-user">
+              <div className="sidebar-user-info">
+                <span className="sidebar-user-name">{user.name}</span>
+                <span className="sidebar-user-role">{user.role}</span>
+              </div>
+              <button className="sidebar-logout-btn" onClick={onLogout} title="Sign out">
+                <LogOut size={18} />
+              </button>
+            </div>
+          )}
         </div>
       </aside>
 

@@ -1,70 +1,62 @@
 package com.pos.backend.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Security Configuration
- * 
- * This configures Spring Security for your application.
- * 
- * BEGINNER MODE: We're starting with minimal security to make development easier.
- * In Week 4, we'll add proper JWT authentication.
- * 
- * @Configuration marks this as a configuration class
- * @EnableWebSecurity enables Spring Security
- */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    /**
-     * Password Encoder Bean
-     * 
-     * BCrypt is a one-way hashing algorithm for passwords.
-     * NEVER store passwords in plain text!
-     * 
-     * Example:
-     * - User password: "password123"
-     * - Stored in DB: "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"
-     * 
-     * Even if someone steals the database, they can't reverse the hash!
-     */
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserDetailsService userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Security Filter Chain
-     * 
-     * This defines which URLs require authentication.
-     * 
-     * CURRENT SETUP (Development Mode):
-     * - Disables CSRF (needed for REST APIs)
-     * - Allows all requests without authentication
-     * 
-     * FUTURE SETUP (Week 4):
-     * - Enable JWT authentication
-     * - Protect endpoints based on roles (ADMIN, CASHIER)
-     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Disable CSRF for REST APIs (we'll use JWT tokens instead)
             .csrf(csrf -> csrf.disable())
-            
-            // Allow ALL requests during development (no authentication needed)
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()  // Allow everything for now!
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                .anyRequest().authenticated()
             )
-            
-            // Allow H2 console to use frames (needed for H2 UI)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
