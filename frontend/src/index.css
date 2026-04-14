@@ -970,3 +970,65 @@ tr:hover td {
   color: white;
   background: rgba(255,255,255,0.1);
 }
+
+/* ===== Reports Page ===== */
+.reports-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.reports-pagination-info {
+  font-size: 13px;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.reports-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.reports-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.reports-detail-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--gray-400);
+}
+
+.reports-totals-summary {
+  background: var(--gray-50);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.reports-totals-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--gray-600);
+}
+
+.reports-totals-grand {
+  border-top: 2px solid var(--gray-200);
+  margin-top: 8px;
+  padding-top: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-900);
+}

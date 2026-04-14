@@ -6,16 +6,17 @@ import {
   Package,
   Users,
   UserCheck,
-  Receipt,
   Monitor,
   Percent,
   ShoppingCart,
+  BarChart3,
   LogOut,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/',               icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/pos',            icon: ShoppingCart,    label: 'POS Terminal', section: 'Sales' },
+  { to: '/reports',        icon: BarChart3,       label: 'Reports' },
   { to: '/stores',         icon: Store,           label: 'Stores',         section: 'Management' },
   { to: '/items',          icon: Package,         label: 'Items' },
   { to: '/persons',        icon: Users,           label: 'Persons' },

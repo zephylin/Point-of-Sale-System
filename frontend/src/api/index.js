@@ -99,3 +99,13 @@ export const saleLineItemApi = {
   update:        (id, data)   => api.put(`/sale-line-items/${id}`, data).then(r => r.data),
   delete:        (id)         => api.delete(`/sale-line-items/${id}`),
 };
+
+export const paymentApi = {
+  getAll:        ()           => api.get('/payments').then(r => r.data),
+  getById:       (id)         => api.get(`/payments/${id}`).then(r => r.data),
+  getBySale:     (saleId)     => api.get(`/payments/sale/${saleId}`).then(r => r.data),
+  getByType:     (type)       => api.get(`/payments/type/${type}`).then(r => r.data),
+  getByDateRange:(start, end) => api.get('/payments/date-range', { params: { startDate: start, endDate: end } }).then(r => r.data),
+  getTotalBySale:(saleId)     => api.get(`/payments/total/sale/${saleId}`).then(r => r.data),
+  count:         ()           => api.get('/payments/count').then(r => r.data),
+};
