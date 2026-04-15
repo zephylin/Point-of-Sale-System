@@ -90,6 +90,8 @@ export const saleApi = {
   complete:      (id, data)   => api.patch(`/sales/${id}/complete`, data).then(r => r.data),
   voidSale:      (id, data)   => api.patch(`/sales/${id}/void`, data).then(r => r.data),
   getBySession:  (sessionId)  => api.get(`/sales/session/${sessionId}`).then(r => r.data),
+  getByStatus:   (status)     => api.get(`/sales/status/${status}`).then(r => r.data),
+  getByDateRange:(start, end) => api.get('/sales/date-range', { params: { startDate: start, endDate: end } }).then(r => r.data),
   count:         ()           => api.get('/sales/count').then(r => r.data),
 };
 

@@ -1032,3 +1032,24 @@ tr:hover td {
   font-weight: 700;
   color: var(--gray-900);
 }
+
+/* ===== Dashboard Enhancements ===== */
+.dash-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+  .dash-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dash-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 24px 0 12px;
+}
