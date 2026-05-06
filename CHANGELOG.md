@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Frontend Testing Framework** with Vitest and React Testing Library (49 tests)
+  - Vitest configured with jsdom environment, global test utilities, and CSS support
+  - Test setup with `@testing-library/jest-dom` matchers
+  - Component tests: `Alert.test.jsx` (7), `Modal.test.jsx` (8), `ConfirmDialog.test.jsx` (7)
+  - Page integration tests: `Login.test.jsx` (8), `Dashboard.test.jsx` (8), `Reports.test.jsx` (12)
+  - Tests cover rendering, user interactions, API mocking, error states, navigation, and accessibility
+  - CI pipeline updated to run `npm run test:run` before build
+  - DevDependencies: vitest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, jsdom
 - **JWT Authentication & Authorization** — Full-stack secure login system
   - `JwtService.java` — Token generation and validation using JJWT 0.12.5 (HS256, configurable secret and expiration)
   - `JwtAuthenticationFilter.java` — Extracts Bearer token from Authorization header, sets Spring Security context
