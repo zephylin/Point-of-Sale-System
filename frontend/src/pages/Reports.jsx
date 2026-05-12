@@ -4,6 +4,7 @@ import {
   Filter, Eye, X, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { saleApi, paymentApi, saleLineItemApi } from '../api';
+import SalesCharts from '../components/SalesCharts';
 
 const PAGE_SIZE = 15;
 
@@ -178,6 +179,9 @@ export default function Reports() {
           </div>
         </div>
       </div>
+
+      {/* Charts */}
+      {!loading && <SalesCharts sales={sales} />}
 
       {/* Filters */}
       <div className="card" style={{ marginBottom: 16 }}>
