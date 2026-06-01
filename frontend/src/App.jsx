@@ -9,6 +9,7 @@ import Cashiers from './pages/Cashiers';
 import TaxCategories from './pages/TaxCategories';
 import Registers from './pages/Registers';
 import POSTerminal from './pages/POSTerminal';
+import Sessions from './pages/Sessions';
 import Reports from './pages/Reports';
 import Login from './pages/Login';
 import './index.css';
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="/tax-categories" element={<TaxCategories />} />
         <Route path="/registers" element={<Registers />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/sessions" element={<Sessions />} />
         <Route path="/pos" element={<POSTerminal />} />
       </Route>
     </Routes>

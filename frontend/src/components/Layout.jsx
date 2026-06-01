@@ -10,12 +10,14 @@ import {
   Percent,
   ShoppingCart,
   BarChart3,
+  Clock,
   LogOut,
 } from 'lucide-react';
 
 const navItems = [
   { to: '/',               icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/pos',            icon: ShoppingCart,    label: 'POS Terminal', section: 'Sales' },
+  { to: '/sessions',       icon: Clock,           label: 'Sessions' },
   { to: '/reports',        icon: BarChart3,       label: 'Reports' },
   { to: '/stores',         icon: Store,           label: 'Stores',         section: 'Management' },
   { to: '/items',          icon: Package,         label: 'Items' },

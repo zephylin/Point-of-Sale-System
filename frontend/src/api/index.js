@@ -78,9 +78,13 @@ export const sessionApi = {
   getAll:        ()           => api.get('/sessions').then(r => r.data),
   getById:       (id)         => api.get(`/sessions/${id}`).then(r => r.data),
   create:        (data)       => api.post('/sessions', data).then(r => r.data),
+  delete:        (id)         => api.delete(`/sessions/${id}`),
   getByStatus:   (status)     => api.get(`/sessions/status/${status}`).then(r => r.data),
+  getByCashier:  (cashierId)  => api.get(`/sessions/cashier/${cashierId}`).then(r => r.data),
+  getByRegister: (registerId) => api.get(`/sessions/register/${registerId}`).then(r => r.data),
   getActiveByCashier: (id)    => api.get(`/sessions/cashier/${id}/active`).then(r => r.data),
   close:         (id, data)   => api.patch(`/sessions/${id}/close`, data).then(r => r.data),
+  count:         ()           => api.get('/sessions/count').then(r => r.data),
 };
 
 export const saleApi = {
